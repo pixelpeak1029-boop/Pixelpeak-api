@@ -315,6 +315,33 @@ app.post('/api/messages/read', (req, res) => {
         res.status(500).json({ error: 'Sunucu hatası' });
     }
 });
+// ========== TMDB API ENTEGRASYONU ==========
+const TMDB_API_KEY = '52cd890e103704cf075a0ee0aab63e4c';
+const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+
+// Popüler filmleri getir
+app.get('/api/movies/popular', async (req, res) => {
+    try {
+        const response = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=tr-TR&page=1`);
+        const data = await response.json();
+        res.json(data.results);
+    } catch (error) {
+        console.error('Film hatası:', error);
+        res.status(500).json({ error: 'Filmler yüklenemedi' });
+    }
+});
+
+// Popüler dizileri getir
+app.get('/api/tv/popular', async (req, res) => {
+    try {
+        const response = await fetch(`${TMDB_BASE_URL}/tv/popular?api_key=${TMDB_API_KEY}&language=tr-TR&page=1`);
+        const data = await response.json();
+        res.json(data.results);
+    } catch (error) {
+        console.error('Dizi hatası:', error);
+        res.status(500).json({ error: 'Diziler yüklenemedi' });
+    }
+});
 
 // Sunucuyu başlat
 const PORT = process.env.PORT || 3000;
