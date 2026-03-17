@@ -10,7 +10,10 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname))); // HTML dosyalarını servis et
+app.use(express.static(__dirname));
+app.get('/login.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
 
 const USERS_FILE = path.join(__dirname, 'users.json');
 
