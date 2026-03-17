@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>PixelPeak - Ana Sayfa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: #141414;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ----- HEADER ----- */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background-color: #0b0b0b;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .profile-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #e50914, #b20710);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+
+        .category-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-left: 10px;
+            flex: 1;
+        }
+
+        .cat-btn {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: #2a2a2a;
+            color: #aaa;
+            max-width: 100px;
+        }
+
+        .cat-btn.active {
+            background-color: #e50914;
+            color: #fff;
+        }
+
+        .chat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            border: 1px solid #444;
+        }
+
+        .chat-icon:hover {
+            background-color: #e50914;
+        }
+
+        /* ----- ARAMA ----- */
+        .search-section {
+            padding: 12px 16px;
+            background-color: #0f0f0f;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            padding: 10px 12px;
+            border: 1px solid #404040;
+        }
+
+        .search-box span {
+            font-size: 18px;
+            margin-right: 8px;
+            color: #aaa;
+        }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        /* ----- İÇERİK ----- */
+        .content-section {
+            padding: 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .content-row {
+            margin-bottom: 20px;
+        }
+
+        .row-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .row-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .horizontal-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 4px 0 12px;
+        }
+
+        .card {
+            flex: 0 0 auto;
+            width: 120px;
+            position: relative;
+        }
+
+        .card.large {
+            width: 160px;
+        }
+
+        .card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 2px solid #333;
+        }
+
+        .card.large img {
+            height: 210px;
+        }
+
+        .card-title {
+            margin-top: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-meta {
+            font-size: 11px;
+            color: #aaa;
+            display: flex;
+            gap: 6px;
+            margin-top: 3px;
+        }
+
+        .match {
+            color: #46d369;
+            font-weight: 600;
+        }
+
+        .st-badge {
+            background-color: #e50914;
+            color: white;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 4px;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-weight: 600;
+        }
+
+        /* Film/Dizi geçiş */
+        .diziler-content {
+            display: none;
+        }
+
+        .show-films .filmler-content {
+            display: block;
+        }
+
+        .show-films .diziler-content {
+            display: none;
+        }
+
+        .show-diziler .filmler-content {
+            display: none;
+        }
+
+        .show-diziler .diziler-content {
+            display: block;
+        }
+
+        /* ----- CHAT PANELİ (TAM EKRAN) ----- */
+        .chat-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100vh;
+            background-color: #1a1a1a;
+            z-index: 1000;
+            transition: right 0.3s ease;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-panel.open {
+            right: 0;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #0f0f0f;
+        }
+
+        .chat-header h3 {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #333;
+        }
+
+        .user-info {
+            padding: 15px 20px;
+            background-color: #0a0a0a;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #e50914;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-email {
+            font-size: 13px;
+            color: #aaa;
+            word-break: break-all;
+        }
+
+        /* İKİ SEKMELİ YAPI */
+        .chat-tabs {
+            display: flex;
+            border-bottom: 1px solid #333;
+        }
+
+        .chat-tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px 0;
+            font-weight: 600;
+            cursor: pointer;
+            color: #aaa;
+            transition: all 0.2s;
+        }
+
+        .chat-tab.active {
+            color: #e50914;
+            border-bottom: 3px solid #e50914;
+        }
+
+        .chat-content {
+            flex: 1;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .chat-content.active {
+            display: block;
+        }
+
+        /* ARKADAŞ EKLEME */
+        .add-friend-section {
+            padding: 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .add-friend-title {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #e50914;
+            font-weight: 600;
+        }
+
+        .add-friend-input {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .add-friend-input input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 6px;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .add-friend-btn {
+            padding: 0 18px;
+            background-color: #e50914;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* KULLANICI LİSTESİ */
+        .users-list, .friends-list {
+            padding: 15px;
+        }
+
+        .list-title {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background-color: #252525;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .user-item:hover {
+            background-color: #333;
+        }
+
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e50914;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .user-info-small {
+            flex: 1;
+        }
+
+        .user-name-small {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-email-small {
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .add-badge {
+            background-color: #e50914;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* MESAJLAŞMA EKRANI */
+        .message-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #1a1a1a;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .message-screen.active {
+            display: flex;
+        }
+
+        .message-header {
+            padding: 15px 20px;
+            background-color: #0f0f0f;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .message-friend-info {
+            flex: 1;
+        }
+
+        .message-friend-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .message-friend-email {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message-bubble {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+
+        .message-bubble.sent {
+            align-self: flex-end;
+            background-color: #e50914;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-bubble.received {
+            align-self: flex-start;
+            background-color: #333;
+            color: white;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .message-input-area {
+            padding: 15px 20px;
+            background-color: #0f0f0f;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input-area input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 20px;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .message-send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #e50914;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        .footer {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="appContainer">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="profile-icon" id="profileBtn">👤</div>
+            <div class="category-wrapper">
+                <button class="cat-btn active" id="filmBtn">🎬 Filmler</button>
+                <button class="cat-btn" id="diziBtn">📺 Diziler</button>
+            </div>
+            <div class="chat-icon" id="chatBtn">💬</div>
+        </div>
+
+        <!-- ARAMA -->
+        <div class="search-section">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" placeholder="Film, dizi ara..." id="searchInput">
+            </div>
+        </div>
+
+        <!-- İÇERİK (Filmler/Diziler) -->
+        <div class="content-section" id="contentArea">
+            <!-- FİLMLER -->
+            <div class="filmler-content">
+                <div class="section-title"><span>🍿</span> Popüler Filmler</div>
+                <!-- ... film içeriğin aynen duruyor ... -->
+                <div class="content-row">
+                    <div class="row-header"><h3>Stranger Things Koleksiyonu</h3><a href="#">Tümü ›</a></div>
+                    <div class="horizontal-scroll">
+                        <div class="card large"><div class="st-badge">YENİ</div><img src="https://occ-0-2794-2219.1.nflxso.net/dnm/api/v6/6AYY37jfdO6hpXcMjf9Yu5cnmO0/AAAABfQmEQTR2N6I6cUut81LKnX3HX38Sd_1yUub4K_3q_tLFeAqBkYKcspcNw0f3hJVILodqC5_t2mZbD1TNOQmY5aQo2IDc3L4Mkni.jpg?r=708" alt="Stranger Things"><div class="card-title">Stranger Things 4</div><div class="card-meta"><span class="match">%98</span><span>2024</span></div></div>
+                        <div class="card"><img src="https://via.placeholder.com/120x160/333/e50914?text=ST1"><div class="card-title">Stranger Things 1</div><div class="card-meta"><span class="match">%97</span><span>2016</span></div></div>
+                        <div class="card"><img src="https://via.placeholder.com/120x160/333/e50914?text=ST2"><div class="card-title">Stranger Things 2</div><div class="card-meta"><span class="match">%94</span><span>2017</span></div></div>
+                        <div class="card"><img src="https://via.placeholder.com/120x160/333/e50914?text=ST3"><div class="card-title">Stranger Things 3</div><div class="card-meta"><span class="match">%96</span><span>2019</span></div></div>
+                    </div>
+                </div>
+                <div class="content-row">
+                    <div class="row-header"><h3>En Çok İzlenenler</h3><a href="#">Tümü ›</a></div>
+                    <div class="horizontal-scroll">
+                        <div class="card"><img src="https://via.placeholder.com/120x160/222/fff?text=Red+Notice"><div class="card-title">Red Notice</div><div class="card-meta"><span class="match">%92</span></div></div>
+                        <div class="card"><img src="https://via.placeholder.com/120x160/222/fff?text=Gray+Man"><div class="card-title">The Gray Man</div><div class="card-meta"><span class="match">%88</span></div></div>
+                        <div class="card"><img src="https://via.placeholder.com/120x160/222/fff?text=Extraction"><div class="card-title">Extraction 2</div><div class="card-meta"><span class="match">%90</span></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DİZİLER -->
+            <div class="diziler-content">
+                <div class="section-title"><span>📺</span> Popüler Diziler</div>
+                <div class="content-row">
+                    <div class="row-header"><h3>Stranger Things Evreni</h3><a href="#">Tümü ›</a></div>
+                    <div class="horizontal-scroll">
+                        <div class="card large"><div class="st-badge">YENİ SEZON</div><img src="https://occ-0-2794-2219.1.nflxso.net/dnm/api/v6/6AYY37jfdO6hpXcMjf9Yu5cnmO0/AAAABY-C-KrICw9odYtM_wK01uQ0vO30wOqgV-3eHxUOsEuaQsGc1NTUbA8DkUV8bBO_zD2v-vRq_JPQl7R2aAdAdeih0p0W0nQv25c9.jpg?r=b67"><div class="card-title">Stranger Things 5</div><div class="card-meta"><span class="match">%99</span><span>2024</span></div></div>
+                        <div class="card"><img src="https://via.placeholder.com/120x160/333/e50914?text=ST+S1"><div class="card-title">Stranger Things S1</div><div class="card-meta"><span class="match">%98</span></div></div>
+                        <div class="card"><img src="https://via.placeholder.com/120x160/333/e50914?text=ST+S2"><div class="card-title">Stranger Things S2</div><div class="card-meta"><span class="match">%94</span></div></div>
+                        <div class="card"><img src="https://via.placeholder.com/120x160/333/e50914?text=ST+S3"><div class="card-title">Stranger Things S3</div><div class="card-meta"><span class="match">%96</span></div></div>
+                        <div class="card"><img src="https://via.placeholder.com/120x160/333/e50914?text=ST+S4"><div class="card-title">Stranger Things S4</div><div class="card-meta"><span class="match">%95</span></div></div>
+                    </div>
+                </div>
+                <div class="content-row">
+                    <div class="row-header"><h3>Netflix Yapımları</h3><a href="#">Tümü ›</a></div>
+                    <div class="horizontal-scroll">
+                        <div class="card"><img src="https://via.placeholder.com/120x160/222/fff?text=Wednesday"><div class="card-title">Wednesday</div><div class="card-meta"><span class="match">%95</span></div></div>
+                        <div class="card"><img src="https://via.placeholder.com/120x160/222/fff?text=Dark"><div class="card-title">Dark</div><div class="card-meta"><span class="match">%97</span></div></div>
+                        <div class="card"><img src="https://via.placeholder.com/120x160/222/fff?text=Witcher"><div class="card-title">The Witcher</div><div class="card-meta"><span class="match">%89</span></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAT PANELİ -->
+        <div class="chat-panel" id="chatPanel">
+            <div class="chat-header">
+                <h3>💬 Sosyal</h3>
+                <button class="close-chat" id="closeChat">✕</button>
+            </div>
+            
+            <!-- Kullanıcı bilgisi -->
+            <div class="user-info" id="userInfo">
+                <div class="user-avatar" id="profileAvatar">👤</div>
+                <div class="user-details">
+                    <div class="user-name" id="userName">Kullanıcı</div>
+                    <div class="user-email" id="userEmail">ornek@email.com</div>
+                </div>
+            </div>
+
+            <!-- İki sekme: Tüm Kullanıcılar / Arkadaşlar -->
+            <div class="chat-tabs">
+                <div class="chat-tab active" id="allUsersTab">👥 Tüm Kullanıcılar</div>
+                <div class="chat-tab" id="friendsTab">🤝 Arkadaşlarım</div>
+            </div>
+
+            <!-- TÜM KULLANICILAR İÇERİĞİ -->
+            <div class="chat-content active" id="allUsersContent">
+                <div class="users-list" id="usersList">
+                    <div class="list-title">📋 Kayıtlı kullanıcılar (eposta ile ekleyebilirsin)</div>
+                    <!-- API'den gelen kullanıcılar buraya yüklenecek -->
+                </div>
+            </div>
+
+            <!-- ARKADAŞLAR İÇERİĞİ -->
+            <div class="chat-content" id="friendsContent">
+                <!-- Arkadaş ekleme bölümü -->
+                <div class="add-friend-section">
+                    <div class="add-friend-title">➕ Arkadaş Ekle</div>
+                    <div class="add-friend-input">
+                        <input type="email" id="friendEmail" placeholder="E-posta ile ara...">
+                        <button class="add-friend-btn" id="addFriendBtn">Ekle</button>
+                    </div>
+                </div>
+
+                <!-- Arkadaş listesi -->
+                <div class="friends-list" id="friendsList">
+                    <div class="list-title">🤝 Arkadaşların</div>
+                    <!-- Arkadaşlar buraya yüklenecek -->
+                </div>
+            </div>
+        </div>
+
+        <!-- MESAJLAŞMA EKRANI -->
+        <div class="message-screen" id="messageScreen">
+            <div class="message-header">
+                <button class="back-btn" id="closeMessageScreen">←</button>
+                <div class="message-friend-info">
+                    <div class="message-friend-name" id="messageFriendName">Arkadaş</div>
+                    <div class="message-friend-email" id="messageFriendEmail">email@example.com</div>
+                </div>
+            </div>
+            
+            <div class="messages-area" id="messagesArea">
+                <!-- Mesajlar buraya gelecek -->
+            </div>
+            
+            <div class="message-input-area">
+                <input type="text" id="messageInput" placeholder="Mesajını yaz...">
+                <button class="message-send-btn" id="sendMessageBtn">➤</button>
+            </div>
+        </div>
+
+        <!-- Arkaplan karartma -->
+        <div class="overlay" id="overlay"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://pixelpeak-api.onrender.com/api';
+        let currentUser = null;
+        let allUsers = [];
+        let friends = [];
+        let currentChatFriend = null;
+        let messages = {};
+
+        // ===== GİRİŞ YAPAN KULLANICIYI AL =====
+        (async function init() {
+            // Login'den gelen bilgiler
+            const storedUser = localStorage.getItem('pixelpeak_user');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('userName').textContent = currentUser.name || currentUser.email.split('@')[0];
+                document.getElementById('profileAvatar').textContent = currentUser.avatar || '👤';
+                document.getElementById('profileBtn').textContent = currentUser.avatar || '👤';
+            } else {
+                // Test için
+                currentUser = { email: 'test@test.com', name: 'Test', id: '123' };
+            }
+
+            // Kullanıcıları ve arkadaşları yükle
+            await loadAllUsers();
+            await loadFriends();
+        })();
+
+        // ===== TÜM KULLANICILARI GETİR =====
+        async function loadAllUsers() {
+            try {
+                const response = await fetch(`${API_URL}/all-users`);
+                allUsers = await response.json();
+                
+                // Kendini gösterme
+                const otherUsers = allUsers.filter(u => u.email !== currentUser.email);
+                
+                displayUsers(otherUsers);
+            } catch (error) {
+                console.error('Kullanıcılar yüklenemedi:', error);
+            }
+        }
+
+        // ===== ARKADAŞLARI GETİR (kullanıcının friends array'indan) =====
+        async function loadFriends() {
+            try {
+                // Şimdilik localStorage'da tutalım, sonra API'den çekeriz
+                friends = JSON.parse(localStorage.getItem(`friends_${currentUser.email}`)) || [];
+                
+                // Örnek arkadaş yoksa boş göster
+                if (friends.length === 0) {
+                    document.getElementById('friendsList').innerHTML = `
+                        <div class="list-title">🤝 Arkadaşların</div>
+                        <div style="padding:20px; text-align:center; color:#666;">Henüz arkadaşın yok. Tüm kullanıcılar sekmesinden ekleyebilirsin.</div>
+                    `;
+                } else {
+                    displayFriends();
+                }
+            } catch (error) {
+                console.error('Arkadaşlar yüklenemedi:', error);
+            }
+        }
+
+        // ===== KULLANICILARI GÖSTER =====
+        function displayUsers(users) {
+            const usersList = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                usersList.innerHTML = `
+                    <div class="list-title">📋 Kayıtlı kullanıcılar</div>
+                    <div style="padding:20px; text-align:center; color:#666;">Henüz başka kullanıcı yok.</div>
+                `;
+                return;
+            }
+
+            let html = '<div class="list-title">📋 Kayıtlı kullanıcılar (eposta ile ekleyebilirsin)</div>';
+            
+            // Sadece ilk 20'yi göster (çok kalabalık olmasın)
+            const limitedUsers = users.slice(0, 20);
+            
+            limitedUsers.forEach(user => {
+                const isFriend = friends.some(f => f.email === user.email);
+                html += `
+                    <div class="user-item" data-email="${user.email}" data-name="${user.name || user.email.split('@')[0]}">
+                        <div class="user-avatar-small">${user.avatar || '👤'}</div>
+                        <div class="user-info-small">
+                            <div class="user-name-small">${user.name || user.email.split('@')[0]}</div>
+                            <div class="user-email-small">${user.email}</div>
+                        </div>
+                        ${!isFriend ? '<div class="add-badge" onclick="event.stopPropagation(); addFriend(\'' + user.email + '\')">➕ Ekle</div>' : '<div class="add-badge" style="background:#46d369;">✓ Arkadaş</div>'}
+                    </div>
+                `;
+            });
+
+            if (users.length > 20) {
+                html += `<div style="padding:15px; text-align:center; color:#e50914;">+${users.length - 20} kullanıcı daha var...</div>`;
+            }
+            
+            usersList.innerHTML = html;
+
+            // Kullanıcılara tıklayınca mesaj gönder
+            document.querySelectorAll('.user-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('add-badge')) return;
+                    const email = this.dataset.email;
+                    const name = this.dataset.name;
+                    openMessageScreen(name, email);
+                });
+            });
+        }
+
+        // ===== ARKADAŞLARI GÖSTER =====
+        function displayFriends() {
+            const friendsList = document.getElementById('friendsList');
+            
+            if (friends.length === 0) {
+                friendsList.innerHTML = `
+                    <div class="list-title">🤝 Arkadaşların</div>
+                    <div style="padding:20px; text-align:center; color:#666;">Henüz arkadaşın yok.</div>
+                `;
+                return;
+            }
+
+            let html = '<div class="list-title">🤝 Arkadaşların</div>';
+            
+            friends.forEach(friend => {
+                html += `
+                    <div class="user-item" data-email="${friend.email}" data-name="${friend.name}">
+                        <div class="user-avatar-small">${friend.avatar || '👤'}</div>
+                        <div class="user-info-small">
+                            <div class="user-name-small">${friend.name}</div>
+                            <div class="user-email-small">${friend.email}</div>
+                        </div>
+                        <div class="message-indicator"></div>
+                    </div>
+                `;
+            });
+            
+            friendsList.innerHTML = html;
+
+            // Arkadaşlara tıklayınca mesaj aç
+            document.querySelectorAll('#friendsList .user-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const email = this.dataset.email;
+                    const name = this.dataset.name;
+                    openMessageScreen(name, email);
+                });
+            });
+        }
+
+        // ===== ARKADAŞ EKLE =====
+        function addFriend(email) {
+            if (!email || email === currentUser.email) {
+                alert('Kendini ekleyemezsin!');
+                return;
+            }
+
+            // Kullanıcı var mı kontrol et
+            const user = allUsers.find(u => u.email === email);
+            if (!user) {
+                alert('Bu email ile kayıtlı kullanıcı bulunamadı!');
+                return;
+            }
+
+            // Zaten arkadaş mı?
+            if (friends.some(f => f.email === email)) {
+                alert('Bu kullanıcı zaten arkadaşın!');
+                return;
+            }
+
+            // Yeni arkadaş ekle
+            const newFriend = {
+                email: user.email,
+                name: user.name || user.email.split('@')[0],
+                avatar: user.avatar || '👤'
+            };
+
+            friends.push(newFriend);
+            localStorage.setItem(`friends_${currentUser.email}`, JSON.stringify(friends));
+
+            // Listeleri güncelle
+            loadAllUsers();
+            displayFriends();
+
+            // Başarılı mesajı
+            alert('✅ Arkadaş eklendi!');
+        }
+
+        // ===== MESAJLAŞMA EKRANINI AÇ =====
+        function openMessageScreen(name, email) {
+            currentChatFriend = { name, email };
+            document.getElementById('messageFriendName').textContent = name;
+            document.getElementById('messageFriendEmail').textContent = email;
+            document.getElementById('messageScreen').classList.add('active');
+            
+            // Mesajları yükle
+            loadMessages(email);
+        }
+
+        // ===== MESAJLARI YÜKLE =====
+        function loadMessages(friendEmail) {
+            const messagesArea = document.getElementById('messagesArea');
+            const key = `messages_${currentUser.email}_${friendEmail}`;
+            const chatMessages = JSON.parse(localStorage.getItem(key)) || [];
+            
+            if (chatMessages.length === 0) {
+                messagesArea.innerHTML = `
+                    <div style="text-align: center; color: #666; padding: 20px;">
+                        💬 Henüz mesaj yok. İlk mesajı sen yaz!
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            chatMessages.forEach(msg => {
+                const isSent = msg.from === currentUser.email;
+                html += `
+                    <div class="message-bubble ${isSent ? 'sent' : 'received'}">
+                        ${msg.text}
+                        <div class="message-time">${new Date(msg.time).toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'})}</div>
+                    </div>
+                `;
+            });
+            
+            messagesArea.innerHTML = html;
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        // ===== MESAJ GÖNDER =====
+        document.getElementById('sendMessageBtn').addEventListener('click', function() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (!text || !currentChatFriend) return;
+
+            // Mesajı kaydet
+            const key = `messages_${currentUser.email}_${currentChatFriend.email}`;
+            const messages = JSON.parse(localStorage.getItem(key)) || [];
+            
+            messages.push({
+                from: currentUser.email,
+                to: currentChatFriend.email,
+                text: text,
+                time: new Date().toISOString()
+            });
+
+            localStorage.setItem(key, JSON.stringify(messages));
+
+            // Karşılıklı mesajları da kaydet (alıcı için)
+            const receiverKey = `messages_${currentChatFriend.email}_${currentUser.email}`;
+            const receiverMessages = JSON.parse(localStorage.getItem(receiverKey)) || [];
+            receiverMessages.push({
+                from: currentUser.email,
+                to: currentChatFriend.email,
+                text: text,
+                time: new Date().toISOString()
+            });
+            localStorage.setItem(receiverKey, JSON.stringify(receiverMessages));
+
+            // Mesaj alanını temizle ve yenile
+            input.value = '';
+            loadMessages(currentChatFriend.email);
+        });
+
+        // Enter tuşu ile mesaj gönder
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('sendMessageBtn').click();
+            }
+        });
+
+        // ===== MESAJ EKRANINI KAPAT =====
+        document.getElementById('closeMessageScreen').addEventListener('click', function() {
+            document.getElementById('messageScreen').classList.remove('active');
+            currentChatFriend = null;
+        });
+
+        // ===== SEKMELER =====
+        document.getElementById('allUsersTab').addEventListener('click', function() {
+            document.getElementById('allUsersTab').classList.add('active');
+            document.getElementById('friendsTab').classList.remove('active');
+            document.getElementById('allUsersContent').classList.add('active');
+            document.getElementById('friendsContent').classList.remove('active');
+        });
+
+        document.getElementById('friendsTab').addEventListener('click', function() {
+            document.getElementById('friendsTab').classList.add('active');
+            document.getElementById('allUsersTab').classList.remove('active');
+            document.getElementById('friendsContent').classList.add('active');
+            document.getElementById('allUsersContent').classList.remove('active');
+        });
+
+        // ===== CHAT PANELİ =====
+        const chatBtn = document.getElementById('chatBtn');
+        const chatPanel = document.getElementById('chatPanel');
+        const closeChat = document.getElementById('closeChat');
+        const overlay = document.getElementById('overlay');
+        
+        chatBtn.addEventListener('click', () => {
+            chatPanel.classList.add('open');
+            overlay.classList.add('show');
+        });
+        
+        closeChat.addEventListener('click', () => {
+            chatPanel.classList.remove('open');
+            overlay.classList.remove('show');
+        });
+
+        overlay.addEventListener('click', () => {
+            chatPanel.classList.remove('open');
+            overlay.classList.remove('show');
+            document.getElementById('messageScreen').classList.remove('active');
+        });
+
+        // ===== FİLM/DİZİ GEÇİŞİ =====
+        const filmBtn = document.getElementById('filmBtn');
+        const diziBtn = document.getElementById('diziBtn');
+        const container = document.getElementById('appContainer');
+
+        filmBtn.addEventListener('click', function() {
+            container.classList.remove('show-diziler');
+            container.classList.add('show-films');
+            filmBtn.classList.add('active');
+            diziBtn.classList.remove('active');
+        });
+
+        diziBtn.addEventListener('click', function() {
+            container.classList.remove('show-films');
+            container.classList.add('show-diziler');
+            diziBtn.classList.add('active');
+            filmBtn.classList.remove('active');
+        });
+        container.classList.add('show-films');
+
+        // ===== ARAMA =====
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            // Film/Dizi arama mantığı eklenebilir
+        });
+
+        // ===== ARKADAŞ EKLEME BUTONU =====
+        document.getElementById('addFriendBtn').addEventListener('click', function() {
+            const email = document.getElementById('friendEmail').value.trim();
+            addFriend(email);
+            document.getElementById('friendEmail').value = '';
+        });
+
+        // Enter ile arkadaş ekle
+        document.getElementById('friendEmail').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('addFriendBtn').click();
+            }
+        });
+    </script>
+</body>
+</html>
