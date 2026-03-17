@@ -10,19 +10,23 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname))); // HTML dosyalarını servis et
+app.use(express.static(path.join(__dirname)));
 
 const USERS_FILE = path.join(__dirname, 'users.json');
 const MESSAGES_FILE = path.join(__dirname, 'messages.json');
 
-// users.json yoksa oluştur
-if (!fs.existsSync(USERS_FILE)) {
-    fs.writeFileSync(USERS_FILE, JSON.stringify([]));
-}
-
-// messages.json yoksa oluştur
-if (!fs.existsSync(MESSAGES_FILE)) {
-    fs.writeFileSync(MESSAGES_FILE, JSON.stringify([]));
+// Dosyaların varlığını kontrol et ve yoksa oluştur
+try {
+    if (!fs.existsSync(USERS_FILE)) {
+        fs.writeFileSync(USERS_FILE, JSON.stringify([]));
+        console.log('✅ users.json oluşturuldu');
+    }
+    if (!fs.existsSync(MESSAGES_FILE)) {
+        fs.writeFileSync(MESSAGES_FILE, JSON.stringify([]));
+        console.log('✅ messages.json oluşturuldu');
+    }
+} catch (err) {
+    console.error('❌ Dosya oluşturma hatası:', err);
 }
 
 // Yardımcı fonksiyonlar
@@ -44,162 +48,108 @@ function writeMessages(messages) {
 
 // Ana sayfa
 app.get('/', (req, res) => {
-    res.json({ 
+    res.json({
         message: 'PixelPeak API çalışıyor!',
         endpoints: {
             register: 'POST /api/register',
             login: 'POST /api/login',
-            users: 'GET /api/users',
             allusers: 'GET /api/all-users',
-            messages: 'POST /api/messages/get',
-            send: 'POST /api/messages/send'
+            send: 'POST /api/messages/send',
+            get: 'POST /api/messages/get',
+            allmessages: 'GET /api/all-messages'
         }
     });
 });
 
-// KAYIT OL (DÜZ METİN ŞİFRE!)
-app.post('/api/register', async (req, res) => {
+// KAYIT OL
+app.post('/api/register', (req, res) => {
     try {
         const { email, password } = req.body;
-        
         if (!email || !password) {
             return res.status(400).json({ error: 'Email ve şifre gerekli' });
         }
-        
         const users = readUsers();
-        
         if (users.find(u => u.email === email)) {
             return res.status(400).json({ error: 'Bu email zaten kayıtlı' });
         }
-        
-        // Şifreleme YOK! Düz metin kaydet
-        // const hashedPassword = await bcrypt.hash(password, 10);  // KAPATILDI
-        
         const newUser = {
             id: Date.now().toString(),
             email,
-            password: password,  // DÜZ METİN ŞİFRE!
+            password, // düz metin
             name: email.split('@')[0],
             avatar: '👤',
             friends: [],
             createdAt: new Date().toISOString()
         };
-        
         users.push(newUser);
         writeUsers(users);
-        
-        const token = jwt.sign(
-            { userId: newUser.id, email },
-            'gizli-anahtar',
-            { expiresIn: '7d' }
-        );
-        
+        const token = jwt.sign({ userId: newUser.id, email }, 'gizli-anahtar', { expiresIn: '7d' });
         res.status(201).json({
             message: 'Kayıt başarılı',
             token,
-            user: {
-                id: newUser.id,
-                email: newUser.email,
-                name: newUser.name,
-                avatar: newUser.avatar
-            }
+            user: { id: newUser.id, email: newUser.email, name: newUser.name, avatar: newUser.avatar }
         });
-        
     } catch (error) {
+        console.error('Kayıt hatası:', error);
         res.status(500).json({ error: 'Sunucu hatası' });
     }
 });
 
-// GİRİŞ YAP (DÜZ METİN KONTROL!)
-app.post('/api/login', async (req, res) => {
+// GİRİŞ YAP
+app.post('/api/login', (req, res) => {
     try {
         const { email, password } = req.body;
-        
         const users = readUsers();
         const user = users.find(u => u.email === email);
-        
-        if (!user) {
+        if (!user || user.password !== password) {
             return res.status(401).json({ error: 'Email veya şifre hatalı' });
         }
-        
-        // DÜZ METİN KONTROL!
-        if (user.password !== password) {
-            return res.status(401).json({ error: 'Email veya şifre hatalı' });
-        }
-        
-        const token = jwt.sign(
-            { userId: user.id, email },
-            'gizli-anahtar',
-            { expiresIn: '7d' }
-        );
-        
+        const token = jwt.sign({ userId: user.id, email }, 'gizli-anahtar', { expiresIn: '7d' });
         res.json({
             message: 'Giriş başarılı',
             token,
-            user: {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                avatar: user.avatar
-            }
+            user: { id: user.id, email: user.email, name: user.name, avatar: user.avatar }
         });
-        
     } catch (error) {
+        console.error('Giriş hatası:', error);
         res.status(500).json({ error: 'Sunucu hatası' });
     }
 });
 
-// TÜM KULLANICILARI ŞİFRELERİYLE GETİR
+// TÜM KULLANICILAR
 app.get('/api/all-users', (req, res) => {
-    const users = readUsers();
-    res.json(users);
+    try {
+        const users = readUsers();
+        res.json(users);
+    } catch (error) {
+        console.error('all-users hatası:', error);
+        res.status(500).json({ error: 'Sunucu hatası' });
+    }
 });
-
-// TÜM KULLANICILARI ŞİFRESİZ GETİR
-app.get('/api/users', (req, res) => {
-    const users = readUsers();
-    const safeUsers = users.map(u => ({
-        id: u.id,
-        email: u.email,
-        name: u.name,
-        avatar: u.avatar
-    }));
-    res.json(safeUsers);
-});
-
-// ========== MESAJLAŞMA ENDPOINT'LERİ ==========
 
 // MESAJ GÖNDER
 app.post('/api/messages/send', (req, res) => {
     try {
         const { fromEmail, toEmail, text } = req.body;
-        
         if (!fromEmail || !toEmail || !text) {
             return res.status(400).json({ error: 'Eksik bilgi' });
         }
-        
         const messages = readMessages();
-        
         const newMessage = {
             id: Date.now().toString(),
             from: fromEmail,
             to: toEmail,
-            text: text,
+            text,
             time: new Date().toISOString(),
             read: false
         };
-        
         messages.push(newMessage);
         writeMessages(messages);
-        
-        res.json({ 
-            success: true, 
-            message: newMessage 
-        });
-        
+        console.log('Mesaj kaydedildi:', newMessage);
+        res.json({ success: true, message: newMessage });
     } catch (error) {
         console.error('Mesaj gönderme hatası:', error);
-        res.status(500).json({ error: 'Sunucu hatası' });
+        res.status(500).json({ error: 'Sunucu hatası: ' + error.message });
     }
 });
 
@@ -207,95 +157,38 @@ app.post('/api/messages/send', (req, res) => {
 app.post('/api/messages/get', (req, res) => {
     try {
         const { userEmail, friendEmail } = req.body;
-        
         if (!userEmail || !friendEmail) {
             return res.status(400).json({ error: 'Eksik bilgi' });
         }
-        
         const messages = readMessages();
-        
-        // İki kişi arasındaki mesajları filtrele
-        const chatMessages = messages.filter(m => 
-            (m.from === userEmail && m.to === friendEmail) || 
+        const chatMessages = messages.filter(m =>
+            (m.from === userEmail && m.to === friendEmail) ||
             (m.from === friendEmail && m.to === userEmail)
         );
-        
-        // Tarihe göre sırala (eski -> yeni)
         chatMessages.sort((a, b) => new Date(a.time) - new Date(b.time));
-        
         res.json(chatMessages);
-        
     } catch (error) {
         console.error('Mesaj getirme hatası:', error);
-        res.status(500).json({ error: 'Sunucu hatası' });
+        res.status(500).json({ error: 'Sunucu hatası: ' + error.message });
     }
 });
 
-// OKUNMAMIŞ MESAJ SAYISI
-app.post('/api/messages/unread', (req, res) => {
-    try {
-        const { userEmail } = req.body;
-        
-        if (!userEmail) {
-            return res.status(400).json({ error: 'Eksik bilgi' });
-        }
-        
-        const messages = readMessages();
-        
-        // Okunmamış mesajları say
-        const unreadMessages = messages.filter(m => 
-            m.to === userEmail && !m.read
-        );
-        
-        res.json({ count: unreadMessages.length });
-        
-    } catch (error) {
-        console.error('Okunmamış mesaj hatası:', error);
-        res.status(500).json({ error: 'Sunucu hatası' });
-    }
-});
-
-// MESAJLARI OKUNDU YAP
-app.post('/api/messages/read', (req, res) => {
-    try {
-        const { userEmail, friendEmail } = req.body;
-        
-        if (!userEmail || !friendEmail) {
-            return res.status(400).json({ error: 'Eksik bilgi' });
-        }
-        
-        const messages = readMessages();
-        
-        // Arkadaştan gelen okunmamış mesajları okundu yap
-        const updatedMessages = messages.map(m => {
-            if (m.from === friendEmail && m.to === userEmail && !m.read) {
-                m.read = true;
-            }
-            return m;
-        });
-        
-        writeMessages(updatedMessages);
-        
-        res.json({ success: true });
-        
-    } catch (error) {
-        console.error('Mesaj okundu hatası:', error);
-        res.status(500).json({ error: 'Sunucu hatası' });
-    }
-});
-
-// TÜM MESAJLARI GETİR (test için)
+// TÜM MESAJLAR (test)
 app.get('/api/all-messages', (req, res) => {
-    const messages = readMessages();
-    res.json(messages);
+    try {
+        const messages = readMessages();
+        res.json(messages);
+    } catch (error) {
+        console.error('all-messages hatası:', error);
+        res.status(500).json({ error: 'Sunucu hatası' });
+    }
 });
 
-// Sunucuyu başlat
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ PixelPeak API çalışıyor!`);
     console.log(`📍 http://localhost:${PORT}`);
-    console.log(`📄 Login sayfası: http://localhost:${PORT}/login.html`);
+    console.log(`📄 Login: http://localhost:${PORT}/login.html`);
     console.log(`👀 Tüm kullanıcılar: http://localhost:${PORT}/api/all-users`);
     console.log(`💬 Tüm mesajlar: http://localhost:${PORT}/api/all-messages`);
 });
