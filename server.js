@@ -150,6 +150,61 @@ app.get('/api/users', (req, res) => {
     }));
     res.json(safeUsers);
 });
+// MESAJ GÖNDER
+app.post('/api/messages/send', (req, res) => {
+    const { fromEmail, toEmail, text } = req.body;
+    
+    if (!fromEmail || !toEmail || !text) {
+        return res.status(400).json({ error: 'Eksik bilgi' });
+    }
+    
+    // Mesajları oku
+    let messages = [];
+    if (fs.existsSync('messages.json')) {
+        messages = JSON.parse(fs.readFileSync('messages.json'));
+    }
+    
+    // Yeni mesaj
+    const newMessage = {
+        id: Date.now().toString(),
+        from: fromEmail,
+        to: toEmail,
+        text: text,
+        time: new Date().toISOString(),
+        read: false
+    };
+    
+    messages.push(newMessage);
+    fs.writeFileSync('messages.json', JSON.stringify(messages, null, 2));
+    
+    res.json({ success: true, message: newMessage });
+});
+
+// MESAJLARI GETİR
+app.post('/api/messages/get', (req, res) => {
+    const { userEmail, friendEmail } = req.body;
+    
+    if (!userEmail || !friendEmail) {
+        return res.status(400).json({ error: 'Eksik bilgi' });
+    }
+    
+    // Mesajları oku
+    let messages = [];
+    if (fs.existsSync('messages.json')) {
+        messages = JSON.parse(fs.readFileSync('messages.json'));
+    }
+    
+    // İki kişi arasındaki mesajları filtrele
+    const chatMessages = messages.filter(m => 
+        (m.from === userEmail && m.to === friendEmail) || 
+        (m.from === friendEmail && m.to === userEmail)
+    );
+    
+    // Tarihe göre sırala
+    chatMessages.sort((a, b) => new Date(a.time) - new Date(b.time));
+    
+    res.json(chatMessages);
+});
 
 // Sunucuyu başlat
 const PORT = process.env.PORT || 3000;
@@ -159,3 +214,4 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`📄 Login sayfası: http://localhost:${PORT}/login.html`);
     console.log(`👀 Tüm kullanıcılar (şifreler dahil): http://localhost:${PORT}/api/all-users`);
 });
+
