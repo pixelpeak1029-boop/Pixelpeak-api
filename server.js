@@ -58,7 +58,7 @@ app.post('/api/register', async (req, res) => {
             return res.status(400).json({ error: 'Bu email zaten kayıtlı' });
         }
         
-         const hashedPassword = (password, 10);
+         const hashedPassword = password;
         
         const newUser = {
             id: Date.now().toString(),
