@@ -1196,6 +1196,35 @@ async function loadPopularTVShows() {
         console.error('Dizi yükleme hatası:', error);
     }
 }
+
+// ===== ARAMA FONKSİYONU =====
+let searchTimeout;
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    clearTimeout(searchTimeout);
+    const query = e.target.value.trim();
+    
+    if (query.length < 2) return;
+    
+    searchTimeout = setTimeout(async () => {
+        try {
+            // Film ara
+            const movieRes = await fetch(`${API_URL}/search/movie?query=${encodeURIComponent(query)}`);
+            const movies = await movieRes.json();
+            
+            // Dizi ara
+            const tvRes = await fetch(`${API_URL}/search/tv?query=${encodeURIComponent(query)}`);
+            const shows = await tvRes.json();
+            
+            // Sonuçları göster (şimdilik console'a yazalım)
+            console.log('Film sonuçları:', movies.slice(0, 5));
+            console.log('Dizi sonuçları:', shows.slice(0, 5));
+            
+            // İstersen burada ayrı bir arama sayfasına yönlendirebiliriz
+        } catch (error) {
+            console.error('Arama hatası:', error);
+        }
+    }, 500);
+});
     </script>
 </body>
 </html>
