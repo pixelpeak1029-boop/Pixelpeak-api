@@ -998,12 +998,14 @@ function loadMessages(friendEmail) {
 }
 
 // ===== YENİ MESAJLARI KONTROL ET =====
-setInterval(() => {
+function checkNewMessages() {
     if (currentChatFriend) {
         loadMessages(currentChatFriend.email);
     }
-}, 3000);
+}
 
+// Her 3 saniyede bir kontrol et
+setInterval(checkNewMessages, 3000);
         // ===== YENİ MESAJLARI KONTROL ET =====
         function checkNewMessages() {
             if (!currentChatFriend) return;
