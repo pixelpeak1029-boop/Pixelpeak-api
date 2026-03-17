@@ -453,6 +453,11 @@
             border-radius: 4px;
             font-size: 11px;
             font-weight: 600;
+            cursor: pointer;
+        }
+
+        .add-badge.friend {
+            background-color: #46d369;
         }
 
         /* MESAJLAŞMA EKRANI */
@@ -617,7 +622,6 @@
             <!-- FİLMLER -->
             <div class="filmler-content">
                 <div class="section-title"><span>🍿</span> Popüler Filmler</div>
-                <!-- ... film içeriğin aynen duruyor ... -->
                 <div class="content-row">
                     <div class="row-header"><h3>Stranger Things Koleksiyonu</h3><a href="#">Tümü ›</a></div>
                     <div class="horizontal-scroll">
@@ -686,8 +690,8 @@
             <!-- TÜM KULLANICILAR İÇERİĞİ -->
             <div class="chat-content active" id="allUsersContent">
                 <div class="users-list" id="usersList">
-                    <div class="list-title">📋 Kayıtlı kullanıcılar (eposta ile ekleyebilirsin)</div>
-                    <!-- API'den gelen kullanıcılar buraya yüklenecek -->
+                    <div class="list-title">📋 Kayıtlı kullanıcılar</div>
+                    <div style="padding:20px; text-align:center; color:#666;">Yükleniyor...</div>
                 </div>
             </div>
 
@@ -705,7 +709,7 @@
                 <!-- Arkadaş listesi -->
                 <div class="friends-list" id="friendsList">
                     <div class="list-title">🤝 Arkadaşların</div>
-                    <!-- Arkadaşlar buraya yüklenecek -->
+                    <div style="padding:20px; text-align:center; color:#666;">Yükleniyor...</div>
                 </div>
             </div>
         </div>
@@ -740,33 +744,48 @@
         let allUsers = [];
         let friends = [];
         let currentChatFriend = null;
-        let messages = {};
+        let messageTimer = null;
 
         // ===== GİRİŞ YAPAN KULLANICIYI AL =====
         (async function init() {
             // Login'den gelen bilgiler
             const storedUser = localStorage.getItem('pixelpeak_user');
-            if (storedUser) {
+            const token = localStorage.getItem('pixelpeak_token');
+            
+            if (storedUser && token) {
                 currentUser = JSON.parse(storedUser);
                 document.getElementById('userEmail').textContent = currentUser.email;
                 document.getElementById('userName').textContent = currentUser.name || currentUser.email.split('@')[0];
                 document.getElementById('profileAvatar').textContent = currentUser.avatar || '👤';
                 document.getElementById('profileBtn').textContent = currentUser.avatar || '👤';
+                
+                // Kullanıcıları ve arkadaşları yükle
+                await loadAllUsers();
+                loadFriends();
+                
+                // Her 10 saniyede bir kullanıcıları yenile (yeni kayıtları görmek için)
+                setInterval(loadAllUsers, 10000);
+                // Her 5 saniyede bir mesajları kontrol et
+                setInterval(checkNewMessages, 5000);
             } else {
-                // Test için
-                currentUser = { email: 'test@test.com', name: 'Test', id: '123' };
+                // Giriş yapmamışsa login sayfasına yönlendir
+                window.location.href = '/login.html';
             }
-
-            // Kullanıcıları ve arkadaşları yükle
-            await loadAllUsers();
-            await loadFriends();
         })();
 
         // ===== TÜM KULLANICILARI GETİR =====
         async function loadAllUsers() {
             try {
                 const response = await fetch(`${API_URL}/all-users`);
-                allUsers = await response.json();
+                const data = await response.json();
+                
+                // Şifreleri gösterme ama arkadaşlık için email'leri kullan
+                allUsers = data.map(u => ({
+                    id: u.id,
+                    email: u.email,
+                    name: u.name || u.email.split('@')[0],
+                    avatar: u.avatar || '👤'
+                }));
                 
                 // Kendini gösterme
                 const otherUsers = allUsers.filter(u => u.email !== currentUser.email);
@@ -777,24 +796,26 @@
             }
         }
 
-        // ===== ARKADAŞLARI GETİR (kullanıcının friends array'indan) =====
-        async function loadFriends() {
+        // ===== ARKADAŞLARI YÜKLE =====
+        function loadFriends() {
             try {
-                // Şimdilik localStorage'da tutalım, sonra API'den çekeriz
-                friends = JSON.parse(localStorage.getItem(`friends_${currentUser.email}`)) || [];
-                
-                // Örnek arkadaş yoksa boş göster
-                if (friends.length === 0) {
-                    document.getElementById('friendsList').innerHTML = `
-                        <div class="list-title">🤝 Arkadaşların</div>
-                        <div style="padding:20px; text-align:center; color:#666;">Henüz arkadaşın yok. Tüm kullanıcılar sekmesinden ekleyebilirsin.</div>
-                    `;
+                const savedFriends = localStorage.getItem(`friends_${currentUser.email}`);
+                if (savedFriends) {
+                    friends = JSON.parse(savedFriends);
                 } else {
-                    displayFriends();
+                    friends = [];
                 }
+                
+                displayFriends();
             } catch (error) {
                 console.error('Arkadaşlar yüklenemedi:', error);
+                friends = [];
             }
+        }
+
+        // ===== ARKADAŞLARI KAYDET =====
+        function saveFriends() {
+            localStorage.setItem(`friends_${currentUser.email}`, JSON.stringify(friends));
         }
 
         // ===== KULLANICILARI GÖSTER =====
@@ -809,38 +830,40 @@
                 return;
             }
 
-            let html = '<div class="list-title">📋 Kayıtlı kullanıcılar (eposta ile ekleyebilirsin)</div>';
+            let html = '<div class="list-title">📋 Kayıtlı kullanıcılar</div>';
             
-            // Sadece ilk 20'yi göster (çok kalabalık olmasın)
-            const limitedUsers = users.slice(0, 20);
+            // Sadece ilk 30'u göster
+            const limitedUsers = users.slice(0, 30);
             
             limitedUsers.forEach(user => {
                 const isFriend = friends.some(f => f.email === user.email);
                 html += `
-                    <div class="user-item" data-email="${user.email}" data-name="${user.name || user.email.split('@')[0]}">
-                        <div class="user-avatar-small">${user.avatar || '👤'}</div>
+                    <div class="user-item" data-email="${user.email}" data-name="${user.name}">
+                        <div class="user-avatar-small">${user.avatar}</div>
                         <div class="user-info-small">
-                            <div class="user-name-small">${user.name || user.email.split('@')[0]}</div>
+                            <div class="user-name-small">${user.name}</div>
                             <div class="user-email-small">${user.email}</div>
                         </div>
-                        ${!isFriend ? '<div class="add-badge" onclick="event.stopPropagation(); addFriend(\'' + user.email + '\')">➕ Ekle</div>' : '<div class="add-badge" style="background:#46d369;">✓ Arkadaş</div>'}
+                        ${!isFriend ? 
+                            '<div class="add-badge" onclick="event.stopPropagation(); window.addFriend(\'' + user.email + '\')">➕ Ekle</div>' : 
+                            '<div class="add-badge friend" onclick="event.stopPropagation(); window.openMessageScreen(\'' + user.name + '\', \'' + user.email + '\')">💬 Mesaj</div>'}
                     </div>
                 `;
             });
 
-            if (users.length > 20) {
-                html += `<div style="padding:15px; text-align:center; color:#e50914;">+${users.length - 20} kullanıcı daha var...</div>`;
+            if (users.length > 30) {
+                html += `<div style="padding:15px; text-align:center; color:#e50914;">+${users.length - 30} kullanıcı daha var...</div>`;
             }
             
             usersList.innerHTML = html;
 
             // Kullanıcılara tıklayınca mesaj gönder
-            document.querySelectorAll('.user-item').forEach(item => {
+            document.querySelectorAll('#allUsersContent .user-item').forEach(item => {
                 item.addEventListener('click', function(e) {
                     if (e.target.classList.contains('add-badge')) return;
                     const email = this.dataset.email;
                     const name = this.dataset.name;
-                    openMessageScreen(name, email);
+                    window.openMessageScreen(name, email);
                 });
             });
         }
@@ -852,7 +875,7 @@
             if (friends.length === 0) {
                 friendsList.innerHTML = `
                     <div class="list-title">🤝 Arkadaşların</div>
-                    <div style="padding:20px; text-align:center; color:#666;">Henüz arkadaşın yok.</div>
+                    <div style="padding:20px; text-align:center; color:#666;">Henüz arkadaşın yok. Tüm kullanıcılar sekmesinden ekleyebilirsin.</div>
                 `;
                 return;
             }
@@ -867,7 +890,7 @@
                             <div class="user-name-small">${friend.name}</div>
                             <div class="user-email-small">${friend.email}</div>
                         </div>
-                        <div class="message-indicator"></div>
+                        <div class="add-badge friend" onclick="event.stopPropagation(); window.openMessageScreen('${friend.name}', '${friend.email}')">💬 Mesaj</div>
                     </div>
                 `;
             });
@@ -875,17 +898,18 @@
             friendsList.innerHTML = html;
 
             // Arkadaşlara tıklayınca mesaj aç
-            document.querySelectorAll('#friendsList .user-item').forEach(item => {
-                item.addEventListener('click', function() {
+            document.querySelectorAll('#friendsContent .user-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('add-badge')) return;
                     const email = this.dataset.email;
                     const name = this.dataset.name;
-                    openMessageScreen(name, email);
+                    window.openMessageScreen(name, email);
                 });
             });
         }
 
         // ===== ARKADAŞ EKLE =====
-        function addFriend(email) {
+        window.addFriend = function(email) {
             if (!email || email === currentUser.email) {
                 alert('Kendini ekleyemezsin!');
                 return;
@@ -907,31 +931,31 @@
             // Yeni arkadaş ekle
             const newFriend = {
                 email: user.email,
-                name: user.name || user.email.split('@')[0],
+                name: user.name,
                 avatar: user.avatar || '👤'
             };
 
             friends.push(newFriend);
-            localStorage.setItem(`friends_${currentUser.email}`, JSON.stringify(friends));
+            saveFriends();
 
             // Listeleri güncelle
-            loadAllUsers();
-            displayFriends();
+            loadAllUsers(); // Tüm kullanıcılar sekmesini güncelle
+            displayFriends(); // Arkadaşlar sekmesini güncelle
 
-            // Başarılı mesajı
             alert('✅ Arkadaş eklendi!');
-        }
+        };
 
         // ===== MESAJLAŞMA EKRANINI AÇ =====
-        function openMessageScreen(name, email) {
+        window.openMessageScreen = function(name, email) {
             currentChatFriend = { name, email };
             document.getElementById('messageFriendName').textContent = name;
             document.getElementById('messageFriendEmail').textContent = email;
             document.getElementById('messageScreen').classList.add('active');
+            document.getElementById('overlay').classList.add('show');
             
             // Mesajları yükle
             loadMessages(email);
-        }
+        };
 
         // ===== MESAJLARI YÜKLE =====
         function loadMessages(friendEmail) {
@@ -963,6 +987,18 @@
             messagesArea.scrollTop = messagesArea.scrollHeight;
         }
 
+        // ===== YENİ MESAJLARI KONTROL ET =====
+        function checkNewMessages() {
+            if (!currentChatFriend) return;
+            
+            const key = `messages_${currentUser.email}_${currentChatFriend.email}`;
+            const currentMessages = JSON.parse(localStorage.getItem(key)) || [];
+            
+            // Burada gerçek zamanlı kontrol yapılabilir
+            // Şimdilik sadece mevcut mesajları gösteriyoruz
+            loadMessages(currentChatFriend.email);
+        }
+
         // ===== MESAJ GÖNDER =====
         document.getElementById('sendMessageBtn').addEventListener('click', function() {
             const input = document.getElementById('messageInput');
@@ -970,20 +1006,20 @@
             
             if (!text || !currentChatFriend) return;
 
-            // Mesajı kaydet
-            const key = `messages_${currentUser.email}_${currentChatFriend.email}`;
-            const messages = JSON.parse(localStorage.getItem(key)) || [];
+            // Mesajı kaydet (gönderen için)
+            const senderKey = `messages_${currentUser.email}_${currentChatFriend.email}`;
+            const senderMessages = JSON.parse(localStorage.getItem(senderKey)) || [];
             
-            messages.push({
+            senderMessages.push({
                 from: currentUser.email,
                 to: currentChatFriend.email,
                 text: text,
                 time: new Date().toISOString()
             });
 
-            localStorage.setItem(key, JSON.stringify(messages));
+            localStorage.setItem(senderKey, JSON.stringify(senderMessages));
 
-            // Karşılıklı mesajları da kaydet (alıcı için)
+            // Mesajı kaydet (alıcı için)
             const receiverKey = `messages_${currentChatFriend.email}_${currentUser.email}`;
             const receiverMessages = JSON.parse(localStorage.getItem(receiverKey)) || [];
             receiverMessages.push({
@@ -1009,6 +1045,7 @@
         // ===== MESAJ EKRANINI KAPAT =====
         document.getElementById('closeMessageScreen').addEventListener('click', function() {
             document.getElementById('messageScreen').classList.remove('active');
+            document.getElementById('overlay').classList.remove('show');
             currentChatFriend = null;
         });
 
@@ -1025,6 +1062,9 @@
             document.getElementById('allUsersTab').classList.remove('active');
             document.getElementById('friendsContent').classList.add('active');
             document.getElementById('allUsersContent').classList.remove('active');
+            
+            // Arkadaş listesini yenile
+            displayFriends();
         });
 
         // ===== CHAT PANELİ =====
@@ -1041,6 +1081,7 @@
         closeChat.addEventListener('click', () => {
             chatPanel.classList.remove('open');
             overlay.classList.remove('show');
+            document.getElementById('messageScreen').classList.remove('active');
         });
 
         overlay.addEventListener('click', () => {
@@ -1069,16 +1110,10 @@
         });
         container.classList.add('show-films');
 
-        // ===== ARAMA =====
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            // Film/Dizi arama mantığı eklenebilir
-        });
-
         // ===== ARKADAŞ EKLEME BUTONU =====
         document.getElementById('addFriendBtn').addEventListener('click', function() {
             const email = document.getElementById('friendEmail').value.trim();
-            addFriend(email);
+            window.addFriend(email);
             document.getElementById('friendEmail').value = '';
         });
 
