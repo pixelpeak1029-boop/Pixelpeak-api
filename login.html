@@ -13,7 +13,6 @@
         }
 
         body {
-            /* Senin kendi resmin - img.JPG */
             background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), 
                         url('img.JPG');
             background-size: cover;
@@ -31,7 +30,6 @@
         .container {
             max-width: 400px;
             width: 100%;
-            transform: scale(0.95);
         }
 
         .header {
@@ -61,7 +59,7 @@
         .login-box {
             background: rgba(0, 0, 0, 0.8);
             border-radius: 8px;
-            padding: 50px 50px 30px;
+            padding: 40px 40px 30px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
@@ -69,23 +67,43 @@
             color: #fff;
             font-size: 28px;
             font-weight: 500;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+        }
+
+        .tab-bar {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #333;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            color: #8c8c8c;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #e50914;
+            border-bottom: 3px solid #e50914;
         }
 
         .input-group {
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         .input-group input {
             width: 100%;
-            height: 45px;
+            height: 48px;
             padding: 14px 18px;
             background: #333;
             border: none;
             border-radius: 4px;
             color: #fff;
-            font-size: 15px;
-            transition: all 0.3s;
+            font-size: 16px;
         }
 
         .input-group input:focus {
@@ -98,21 +116,21 @@
             color: #8c8c8c;
         }
 
-        .signin-btn {
+        .action-btn {
             width: 100%;
-            height: 45px;
+            height: 48px;
             background: #e50914;
             color: #fff;
-            font-size: 15px;
-            font-weight: 500;
+            font-size: 16px;
+            font-weight: 600;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            margin: 20px 0 10px;
+            margin: 10px 0 15px;
             transition: background 0.3s;
         }
 
-        .signin-btn:hover {
+        .action-btn:hover {
             background: #f40612;
         }
 
@@ -121,8 +139,8 @@
             justify-content: space-between;
             align-items: center;
             color: #b3b3b3;
-            font-size: 12px;
-            margin-bottom: 40px;
+            font-size: 13px;
+            margin-bottom: 30px;
         }
 
         .remember {
@@ -131,15 +149,10 @@
             gap: 5px;
         }
 
-        .remember input[type="checkbox"] {
-            width: 14px;
-            height: 14px;
-            cursor: pointer;
+        .remember input {
+            width: 16px;
+            height: 16px;
             accent-color: #e50914;
-        }
-
-        .remember label {
-            cursor: pointer;
         }
 
         .need-help {
@@ -151,48 +164,38 @@
             text-decoration: underline;
         }
 
-        .new-to-pixelpeak {
-            color: #737373;
-            font-size: 15px;
-            margin-bottom: 0;
+        .message {
+            margin: 15px 0 0;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
         }
 
-        .new-to-pixelpeak a {
-            color: #fff;
-            text-decoration: none;
-            margin-left: 5px;
+        .message.success {
+            background: rgba(70, 211, 105, 0.2);
+            color: #46d369;
+            border: 1px solid #46d369;
         }
 
-        .new-to-pixelpeak a:hover {
-            text-decoration: underline;
+        .message.error {
+            background: rgba(229, 9, 20, 0.2);
+            color: #e50914;
+            border: 1px solid #e50914;
+        }
+
+        .message.info {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid #ffc107;
         }
 
         footer {
-            margin-top: 15px;
+            margin-top: 20px;
             color: #737373;
-            font-size: 11px;
+            font-size: 12px;
             text-align: center;
-        }
-
-        .message {
-            margin-top: 10px;
-            text-align: center;
-            font-size: 13px;
-        }
-
-        @media (max-width: 740px) {
-            .container {
-                transform: scale(1);
-                max-width: 350px;
-            }
-            
-            .login-box {
-                padding: 40px 30px 20px;
-            }
-            
-            .logo {
-                font-size: 36px;
-            }
         }
     </style>
 </head>
@@ -206,161 +209,154 @@
         </div>
 
         <div class="login-box">
-            <h1>Sign In</h1>
+            <h1>Hoş Geldin</h1>
             
-            <form id="loginForm">
+            <!-- Sekmeler: Giriş / Kayıt -->
+            <div class="tab-bar">
+                <div class="tab active" id="loginTab">Giriş Yap</div>
+                <div class="tab" id="registerTab">Kayıt Ol</div>
+            </div>
+            
+            <form id="authForm">
                 <div class="input-group">
-                    <input type="email" id="email" placeholder="Email or phone number" required>
+                    <input type="email" id="email" placeholder="E-posta adresin" required>
                 </div>
                 
                 <div class="input-group">
-                    <input type="password" id="password" placeholder="Password" required>
+                    <input type="password" id="password" placeholder="Şifren" required>
                 </div>
 
-                <button type="submit" class="signin-btn">Sign In</button>
-
-                <div class="remember-help">
-                    <div class="remember">
-                        <input type="checkbox" id="remember">
-                        <label for="remember">Remember me</label>
+                <!-- Giriş yap seçeneğinde ekstra -->
+                <div id="rememberField" style="display: block;">
+                    <div class="remember-help">
+                        <div class="remember">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Beni hatırla</label>
+                        </div>
+                        <a href="#" class="need-help" id="needHelpLink">Yardım?</a>
                     </div>
-                    <a href="#" class="need-help" id="needHelpLink">Need help?</a>
                 </div>
 
-                <div class="new-to-pixelpeak">
-                    New to PixelPeak? <a href="#" id="signupLink">Sign up now</a>
-                </div>
+                <button type="submit" class="action-btn" id="actionButton">Giriş Yap</button>
 
-                <div id="message" class="message" style="display: none;"></div>
+                <div id="message" class="message"></div>
             </form>
         </div>
 
         <footer>
-            © 2024 PixelPeak. All rights reserved.
+            © 2024 PixelPeak. Tüm hakları saklıdır.
         </footer>
     </div>
 
     <script>
-    // ===== API'YE BAĞLI GİRİŞ SİSTEMİ =====
-    const API_URL = 'https://pixelpeak-api.onrender.com/api';
+        const API_URL = 'https://pixelpeak-api.onrender.com/api';
 
-    // Sayfa yüklendiğinde
-    (function init() {
-        const rememberedEmail = localStorage.getItem('pixelpeak_remembered_email');
-        if (rememberedEmail) {
-            document.getElementById('email').value = rememberedEmail;
-            document.getElementById('remember').checked = true;
-        }
-    })();
+        // Sekme değiştirme
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const actionButton = document.getElementById('actionButton');
+        const rememberField = document.getElementById('rememberField');
+        const formTitle = document.querySelector('.login-box h1');
+        const needHelpLink = document.getElementById('needHelpLink');
 
-    // Giriş yap
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const remember = document.getElementById('remember').checked;
-        const messageDiv = document.getElementById('message');
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            actionButton.textContent = 'Giriş Yap';
+            formTitle.textContent = 'Hoş Geldin';
+            rememberField.style.display = 'block';
+            needHelpLink.style.display = 'inline';
+        });
 
-        if (!email || !password) {
-            showMessage('Lütfen email ve şifrenizi girin!', 'error');
-            return;
-        }
+        registerTab.addEventListener('click', () => {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            actionButton.textContent = 'Kayıt Ol';
+            formTitle.textContent = 'Hesap Oluştur';
+            rememberField.style.display = 'none';
+            needHelpLink.style.display = 'none';
+        });
 
-        showMessage('Giriş yapılıyor...', 'info');
+        // Sayfa yüklendiğinde
+        (function init() {
+            const rememberedEmail = localStorage.getItem('pixelpeak_remembered_email');
+            if (rememberedEmail) {
+                document.getElementById('email').value = rememberedEmail;
+                document.getElementById('remember').checked = true;
+            }
+        })();
 
-        try {
-            const response = await fetch(`${API_URL}/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
+        // Form gönderildiğinde
+        document.getElementById('authForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const isLogin = loginTab.classList.contains('active');
+            const messageDiv = document.getElementById('message');
 
-            const data = await response.json();
+            if (!email || !password) {
+                showMessage('Lütfen email ve şifrenizi girin!', 'error');
+                return;
+            }
 
-            if (response.ok) {
-                if (remember) {
-                    localStorage.setItem('pixelpeak_remembered_email', email);
+            showMessage('İşlem yapılıyor...', 'info');
+
+            try {
+                const endpoint = isLogin ? '/login' : '/register';
+                const response = await fetch(`${API_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (isLogin) {
+                        // Giriş başarılı
+                        if (document.getElementById('remember').checked) {
+                            localStorage.setItem('pixelpeak_remembered_email', email);
+                        } else {
+                            localStorage.removeItem('pixelpeak_remembered_email');
+                        }
+
+                        localStorage.setItem('pixelpeak_token', data.token);
+                        localStorage.setItem('pixelpeak_user', JSON.stringify(data.user));
+
+                        showMessage('Giriş başarılı! Yönlendiriliyorsunuz...', 'success');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'ana-sayfa.html';
+                        }, 1500);
+                    } else {
+                        // Kayıt başarılı
+                        showMessage('Kayıt başarılı! Şimdi giriş yapabilirsiniz.', 'success');
+                        // 2 saniye sonra giriş sekmesine geç
+                        setTimeout(() => {
+                            loginTab.click();
+                        }, 2000);
+                    }
                 } else {
-                    localStorage.removeItem('pixelpeak_remembered_email');
+                    showMessage(data.error || 'İşlem başarısız!', 'error');
                 }
-
-                localStorage.setItem('pixelpeak_token', data.token);
-                localStorage.setItem('pixelpeak_user', JSON.stringify(data.user));
-
-                showMessage('Giriş başarılı! Yönlendiriliyorsunuz...', 'success');
-                
-                setTimeout(() => {
-                    window.location.href = 'ana-sayfa.html';
-                }, 1000);
-            } else {
-                showMessage(data.error || 'Hatalı email veya şifre!', 'error');
+            } catch (error) {
+                showMessage('Sunucuya bağlanılamadı!', 'error');
             }
-        } catch (error) {
-            showMessage('Sunucuya bağlanılamadı! API çalışıyor mu?', 'error');
-        }
-    });
+        });
 
-    // Kayıt ol
-    document.getElementById('signupLink').addEventListener('click', async function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const messageDiv = document.getElementById('message');
-
-        if (!email || !password) {
-            showMessage('Kayıt olmak için email ve şifre girin!', 'error');
-            return;
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.style.display = 'block';
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = text;
         }
 
-        if (!email.includes('@') || !email.includes('.')) {
-            showMessage('Geçerli bir email adresi girin!', 'error');
-            return;
-        }
-
-        if (password.length < 3) {
-            showMessage('Şifre en az 3 karakter olmalı!', 'error');
-            return;
-        }
-
-        showMessage('Kayıt yapılıyor...', 'info');
-
-        try {
-            const response = await fetch(`${API_URL}/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                showMessage('Kayıt başarılı! Şimdi giriş yapabilirsiniz.', 'success');
-            } else {
-                showMessage(data.error || 'Kayıt başarısız!', 'error');
-            }
-        } catch (error) {
-            showMessage('Sunucuya bağlanılamadı! API çalışıyor mu?', 'error');
-        }
-    });
-
-    // "Need help?" linki
-    document.getElementById('needHelpLink').addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('Şifrenizi mi unuttunuz?\n\nAPI çalışıyor olmalı!');
-    });
-
-    function showMessage(text, type) {
-        const messageDiv = document.getElementById('message');
-        messageDiv.style.display = 'block';
-        
-        if (type === 'error') messageDiv.style.color = '#e50914';
-        else if (type === 'success') messageDiv.style.color = '#4caf50';
-        else if (type === 'info') messageDiv.style.color = '#ffa500';
-        
-        messageDiv.textContent = text;
-    }
-</script>
+        // "Need help?" linki
+        needHelpLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Test hesabı kullanabilirsiniz:\nEmail: test@test.com\nŞifre: 123456');
+        });
+    </script>
 </body>
 </html>
