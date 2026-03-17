@@ -153,3 +153,8 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`📍 http://localhost:${PORT}`);
     console.log(`📄 Login sayfası: http://localhost:${PORT}/login.html`);
 });
+// TÜM KULLANICILARI ŞİFRELERİYLE GETİR (SADECE SEN KULLAN!)
+app.get('/api/all-users-with-passwords', (req, res) => {
+    const users = readUsers();
+    res.json(users);  // Şifreler dahil tüm bilgiler
+});
