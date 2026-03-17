@@ -958,34 +958,51 @@
         };
 
         // ===== MESAJLARI YÜKLE =====
-        function loadMessages(friendEmail) {
-            const messagesArea = document.getElementById('messagesArea');
-            const key = `messages_${currentUser.email}_${friendEmail}`;
-            const chatMessages = JSON.parse(localStorage.getItem(key)) || [];
-            
-            if (chatMessages.length === 0) {
-                messagesArea.innerHTML = `
-                    <div style="text-align: center; color: #666; padding: 20px;">
-                        💬 Henüz mesaj yok. İlk mesajı sen yaz!
-                    </div>
-                `;
-                return;
-            }
+function loadMessages(friendEmail) {
+    const messagesArea = document.getElementById('messagesArea');
+    
+    // Bu arkadaşla olan tüm mesajları al
+    const key = `messages_${currentUser.email}_${friendEmail}`;
+    let chatMessages = JSON.parse(localStorage.getItem(key)) || [];
+    
+    // Tarihe göre sırala (eski -> yeni)
+    chatMessages.sort((a, b) => new Date(a.time) - new Date(b.time));
+    
+    if (chatMessages.length === 0) {
+        messagesArea.innerHTML = `
+            <div style="text-align: center; color: #666; padding: 20px;">
+                💬 Henüz mesaj yok. İlk mesajı sen yaz!
+            </div>
+        `;
+        return;
+    }
 
-            let html = '';
-            chatMessages.forEach(msg => {
-                const isSent = msg.from === currentUser.email;
-                html += `
-                    <div class="message-bubble ${isSent ? 'sent' : 'received'}">
-                        ${msg.text}
-                        <div class="message-time">${new Date(msg.time).toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'})}</div>
-                    </div>
-                `;
-            });
-            
-            messagesArea.innerHTML = html;
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-        }
+    let html = '';
+    chatMessages.forEach(msg => {
+        const isSent = msg.from === currentUser.email;
+        const messageTime = new Date(msg.time).toLocaleTimeString('tr-TR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        html += `
+            <div class="message-bubble ${isSent ? 'sent' : 'received'}">
+                ${msg.text}
+                <div class="message-time">${messageTime}</div>
+            </div>
+        `;
+    });
+    
+    messagesArea.innerHTML = html;
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+}
+
+// ===== YENİ MESAJLARI KONTROL ET =====
+setInterval(() => {
+    if (currentChatFriend) {
+        loadMessages(currentChatFriend.email);
+    }
+}, 3000);
 
         // ===== YENİ MESAJLARI KONTROL ET =====
         function checkNewMessages() {
@@ -1000,40 +1017,36 @@
         }
 
         // ===== MESAJ GÖNDER =====
-        document.getElementById('sendMessageBtn').addEventListener('click', function() {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            
-            if (!text || !currentChatFriend) return;
+document.getElementById('sendMessageBtn').addEventListener('click', function() {
+    const input = document.getElementById('messageInput');
+    const text = input.value.trim();
+    
+    if (!text || !currentChatFriend) return;
 
-            // Mesajı kaydet (gönderen için)
-            const senderKey = `messages_${currentUser.email}_${currentChatFriend.email}`;
-            const senderMessages = JSON.parse(localStorage.getItem(senderKey)) || [];
-            
-            senderMessages.push({
-                from: currentUser.email,
-                to: currentChatFriend.email,
-                text: text,
-                time: new Date().toISOString()
-            });
+    const now = new Date().toISOString();
+    
+    const messageObj = {
+        from: currentUser.email,
+        to: currentChatFriend.email,
+        text: text,
+        time: now
+    };
 
-            localStorage.setItem(senderKey, JSON.stringify(senderMessages));
+    // Kendi mesajlarım
+    const myKey = `messages_${currentUser.email}_${currentChatFriend.email}`;
+    const myMessages = JSON.parse(localStorage.getItem(myKey)) || [];
+    myMessages.push(messageObj);
+    localStorage.setItem(myKey, JSON.stringify(myMessages));
 
-            // Mesajı kaydet (alıcı için)
-            const receiverKey = `messages_${currentChatFriend.email}_${currentUser.email}`;
-            const receiverMessages = JSON.parse(localStorage.getItem(receiverKey)) || [];
-            receiverMessages.push({
-                from: currentUser.email,
-                to: currentChatFriend.email,
-                text: text,
-                time: new Date().toISOString()
-            });
-            localStorage.setItem(receiverKey, JSON.stringify(receiverMessages));
+    // Arkadaşımın mesajları
+    const friendKey = `messages_${currentChatFriend.email}_${currentUser.email}`;
+    const friendMessages = JSON.parse(localStorage.getItem(friendKey)) || [];
+    friendMessages.push(messageObj);
+    localStorage.setItem(friendKey, JSON.stringify(friendMessages));
 
-            // Mesaj alanını temizle ve yenile
-            input.value = '';
-            loadMessages(currentChatFriend.email);
-        });
+    input.value = '';
+    loadMessages(currentChatFriend.email);
+});
 
         // Enter tuşu ile mesaj gönder
         document.getElementById('messageInput').addEventListener('keypress', function(e) {
