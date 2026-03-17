@@ -342,6 +342,107 @@ app.get('/api/tv/popular', async (req, res) => {
         res.status(500).json({ error: 'Diziler yüklenemedi' });
     }
 });
+// Film ara
+app.get('/api/search/movie', async (req, res) => {
+    try {
+        const { query } = req.query;
+        const response = await fetch(`${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&language=tr-TR`);
+        const data = await response.json();
+        res.json(data.results);
+    } catch (error) {
+        console.error('Arama hatası:', error);
+        res.status(500).json({ error: 'Arama yapılamadı' });
+    }
+});
+
+// Dizi ara
+app.get('/api/search/tv', async (req, res) => {
+    try {
+        const { query } = req.query;
+        const response = await fetch(`${TMDB_BASE_URL}/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&language=tr-TR`);
+        const data = await response.json();
+        res.json(data.results);
+    } catch (error) {
+        console.error('Arama hatası:', error);
+        res.status(500).json({ error: 'Arama yapılamadı' });
+    }
+});
+
+// Film detayı
+app.get('/api/movie/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const response = await fetch(`${TMDB_BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}&language=tr-TR&append_to_response=credits,videos`);
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error('Detay hatası:', error);
+        res.status(500).json({ error: 'Film detayı yüklenemedi' });
+    }
+});
+
+// Dizi detayı
+app.get('/api/tv/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const response = await fetch(`${TMDB_BASE_URL}/tv/${id}?api_key=${TMDB_API_KEY}&language=tr-TR&append_to_response=credits,videos`);
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error('Detay hatası:', error);
+        res.status(500).json({ error: 'Dizi detayı yüklenemedi' });
+    }
+});
+
+// Kategorilere göre filmler
+app.get('/api/movies/category/:genreId', async (req, res) => {
+    try {
+        const { genreId } = req.params;
+        const response = await fetch(`${TMDB_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${genreId}&language=tr-TR`);
+        const data = await response.json();
+        res.json(data.results);
+    } catch (error) {
+        console.error('Kategori hatası:', error);
+        res.status(500).json({ error: 'Filmler yüklenemedi' });
+    }
+});
+
+// Kategorilere göre diziler
+app.get('/api/tv/category/:genreId', async (req, res) => {
+    try {
+        const { genreId } = req.params;
+        const response = await fetch(`${TMDB_BASE_URL}/discover/tv?api_key=${TMDB_API_KEY}&with_genres=${genreId}&language=tr-TR`);
+        const data = await response.json();
+        res.json(data.results);
+    } catch (error) {
+        console.error('Kategori hatası:', error);
+        res.status(500).json({ error: 'Diziler yüklenemedi' });
+    }
+});
+
+// Kategori listesi (filmler için)
+app.get('/api/genres/movie', async (req, res) => {
+    try {
+        const response = await fetch(`${TMDB_BASE_URL}/genre/movie/list?api_key=${TMDB_API_KEY}&language=tr-TR`);
+        const data = await response.json();
+        res.json(data.genres);
+    } catch (error) {
+        console.error('Kategori listesi hatası:', error);
+        res.status(500).json({ error: 'Kategoriler yüklenemedi' });
+    }
+});
+
+// Kategori listesi (diziler için)
+app.get('/api/genres/tv', async (req, res) => {
+    try {
+        const response = await fetch(`${TMDB_BASE_URL}/genre/tv/list?api_key=${TMDB_API_KEY}&language=tr-TR`);
+        const data = await response.json();
+        res.json(data.genres);
+    } catch (error) {
+        console.error('Kategori listesi hatası:', error);
+        res.status(500).json({ error: 'Kategoriler yüklenemedi' });
+    }
+});
 
 // Sunucuyu başlat
 const PORT = process.env.PORT || 3000;
