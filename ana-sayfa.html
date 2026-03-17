@@ -745,26 +745,27 @@
         let friends = [];
         let currentChatFriend = null;
 
-        // ===== GİRİŞ YAPAN KULLANICIYI AL =====
         (async function init() {
-            const storedUser = localStorage.getItem('pixelpeak_user');
-            const token = localStorage.getItem('pixelpeak_token');
-            
-            if (storedUser && token) {
-                currentUser = JSON.parse(storedUser);
-                document.getElementById('userEmail').textContent = currentUser.email;
-                document.getElementById('userName').textContent = currentUser.name || currentUser.email.split('@')[0];
-                document.getElementById('profileAvatar').textContent = currentUser.avatar || '👤';
-                document.getElementById('profileBtn').textContent = currentUser.avatar || '👤';
-                
-                await loadAllUsers();
-                loadFriends();
-                
-                setInterval(loadAllUsers, 10000);
-            } else {
-                window.location.href = '/login.html';
-            }
-        })();
+    const storedUser = localStorage.getItem('pixelpeak_user');
+    const token = localStorage.getItem('pixelpeak_token');
+    
+    if (storedUser && token) {
+        currentUser = JSON.parse(storedUser);
+        document.getElementById('userEmail').textContent = currentUser.email;
+        document.getElementById('userName').textContent = currentUser.name || currentUser.email.split('@')[0];
+        document.getElementById('profileAvatar').textContent = currentUser.avatar || '👤';
+        document.getElementById('profileBtn').textContent = currentUser.avatar || '👤';
+        
+        await loadAllUsers();
+        await loadPopularMovies();     // ← YENİ
+        await loadPopularTVShows();    // ← YENİ
+        loadFriends();
+        
+        setInterval(loadAllUsers, 10000);
+    } else {
+        window.location.href = '/login.html';
+    }
+})();
 
         // ===== TÜM KULLANICILARI GETİR =====
         async function loadAllUsers() {
@@ -1130,6 +1131,71 @@
                 document.getElementById('addFriendBtn').click();
             }
         });
+// ===== FİLMLERİ YÜKLE =====
+async function loadPopularMovies() {
+    try {
+        const response = await fetch(`${API_URL}/movies/popular`);
+        const movies = await response.json();
+        
+        const filmContainer = document.querySelector('.filmler-content .horizontal-scroll');
+        if (!filmContainer) return;
+        
+        filmContainer.innerHTML = '';
+        
+        movies.slice(0, 10).forEach(movie => {
+            const posterPath = movie.poster_path 
+                ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
+                : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
+            
+            const movieCard = `
+                <div class="card">
+                    <img src="${posterPath}" alt="${movie.title}">
+                    <div class="card-title">${movie.title}</div>
+                    <div class="card-meta">
+                        <span class="match">${Math.round(movie.vote_average * 10)}%</span>
+                        <span>${movie.release_date ? movie.release_date.substring(0, 4) : '?'}</span>
+                    </div>
+                </div>
+            `;
+            filmContainer.innerHTML += movieCard;
+        });
+    } catch (error) {
+        console.error('Film yükleme hatası:', error);
+    }
+}
+
+// ===== DİZİLERİ YÜKLE =====
+async function loadPopularTVShows() {
+    try {
+        const response = await fetch(`${API_URL}/tv/popular`);
+        const shows = await response.json();
+        
+        const diziContainer = document.querySelector('.diziler-content .horizontal-scroll');
+        if (!diziContainer) return;
+        
+        diziContainer.innerHTML = '';
+        
+        shows.slice(0, 10).forEach(show => {
+            const posterPath = show.poster_path 
+                ? `https://image.tmdb.org/t/p/w200${show.poster_path}`
+                : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
+            
+            const showCard = `
+                <div class="card">
+                    <img src="${posterPath}" alt="${show.name}">
+                    <div class="card-title">${show.name}</div>
+                    <div class="card-meta">
+                        <span class="match">${Math.round(show.vote_average * 10)}%</span>
+                        <span>${show.first_air_date ? show.first_air_date.substring(0, 4) : '?'}</span>
+                    </div>
+                </div>
+            `;
+            diziContainer.innerHTML += showCard;
+        });
+    } catch (error) {
+        console.error('Dizi yükleme hatası:', error);
+    }
+}
     </script>
 </body>
 </html>
