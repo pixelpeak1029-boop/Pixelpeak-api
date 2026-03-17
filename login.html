@@ -67,7 +67,7 @@
             color: #fff;
             font-size: 28px;
             font-weight: 500;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .tab-bar {
@@ -209,7 +209,7 @@
         </div>
 
         <div class="login-box">
-            <h1>Hoş Geldin</h1>
+            <h1 id="formTitle">Giriş Yap</h1>
             
             <!-- Sekmeler: Giriş / Kayıt -->
             <div class="tab-bar">
@@ -226,8 +226,13 @@
                     <input type="password" id="password" placeholder="Şifren" required>
                 </div>
 
-                <!-- Giriş yap seçeneğinde ekstra -->
-                <div id="rememberField" style="display: block;">
+                <!-- Kayıt olurken 2. şifre alanı (başlangıçta gizli) -->
+                <div class="input-group" id="confirmPasswordGroup" style="display: none;">
+                    <input type="password" id="confirmPassword" placeholder="Şifren tekrar">
+                </div>
+
+                <!-- Giriş yap seçeneğinde beni hatırla -->
+                <div id="rememberField">
                     <div class="remember-help">
                         <div class="remember">
                             <input type="checkbox" id="remember">
@@ -251,21 +256,26 @@
     <script>
         const API_URL = 'https://pixelpeak-api.onrender.com/api';
 
-        // Sekme değiştirme
+        // Elementler
         const loginTab = document.getElementById('loginTab');
         const registerTab = document.getElementById('registerTab');
         const actionButton = document.getElementById('actionButton');
+        const formTitle = document.getElementById('formTitle');
         const rememberField = document.getElementById('rememberField');
-        const formTitle = document.querySelector('.login-box h1');
         const needHelpLink = document.getElementById('needHelpLink');
+        const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
 
+        // Sekme değiştirme
         loginTab.addEventListener('click', () => {
             loginTab.classList.add('active');
             registerTab.classList.remove('active');
             actionButton.textContent = 'Giriş Yap';
-            formTitle.textContent = 'Hoş Geldin';
+            formTitle.textContent = 'Giriş Yap';
             rememberField.style.display = 'block';
             needHelpLink.style.display = 'inline';
+            confirmPasswordGroup.style.display = 'none';
+            confirmPasswordInput.required = false;
         });
 
         registerTab.addEventListener('click', () => {
@@ -275,6 +285,8 @@
             formTitle.textContent = 'Hesap Oluştur';
             rememberField.style.display = 'none';
             needHelpLink.style.display = 'none';
+            confirmPasswordGroup.style.display = 'block';
+            confirmPasswordInput.required = true;
         });
 
         // Sayfa yüklendiğinde
@@ -292,12 +304,26 @@
             
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
             const isLogin = loginTab.classList.contains('active');
             const messageDiv = document.getElementById('message');
 
+            // Email kontrolü
             if (!email || !password) {
                 showMessage('Lütfen email ve şifrenizi girin!', 'error');
                 return;
+            }
+
+            // Kayıt olurken şifre eşleşme kontrolü
+            if (!isLogin) {
+                if (!confirmPassword) {
+                    showMessage('Lütfen şifrenizi tekrar girin!', 'error');
+                    return;
+                }
+                if (password !== confirmPassword) {
+                    showMessage('Şifreler eşleşmiyor!', 'error');
+                    return;
+                }
             }
 
             showMessage('İşlem yapılıyor...', 'info');
@@ -314,7 +340,7 @@
 
                 if (response.ok) {
                     if (isLogin) {
-                        // Giriş başarılı
+                        // GİRİŞ BAŞARILI
                         if (document.getElementById('remember').checked) {
                             localStorage.setItem('pixelpeak_remembered_email', email);
                         } else {
@@ -330,12 +356,24 @@
                             window.location.href = 'ana-sayfa.html';
                         }, 1500);
                     } else {
-                        // Kayıt başarılı
-                        showMessage('Kayıt başarılı! Şimdi giriş yapabilirsiniz.', 'success');
-                        // 2 saniye sonra giriş sekmesine geç
+                        // KAYIT BAŞARILI - Hemen giriş sekmesine geç ve email'i doldur
+                        showMessage('Kayıt başarılı! Giriş yapıyorsunuz...', 'success');
+                        
+                        // 1.5 saniye sonra giriş sekmesine geç ve email dolu olsun
                         setTimeout(() => {
+                            // Giriş sekmesine geç
                             loginTab.click();
-                        }, 2000);
+                            
+                            // Email'i doldur (şifreyi boş bırak)
+                            document.getElementById('email').value = email;
+                            document.getElementById('password').value = '';
+                            
+                            // "Beni hatırla"yı işaretle
+                            document.getElementById('remember').checked = true;
+                            
+                            // Mesajı temizle
+                            messageDiv.style.display = 'none';
+                        }, 1500);
                     }
                 } else {
                     showMessage(data.error || 'İşlem başarısız!', 'error');
