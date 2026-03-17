@@ -13,10 +13,16 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname))); // HTML dosyalarını servis et
 
 const USERS_FILE = path.join(__dirname, 'users.json');
+const MESSAGES_FILE = path.join(__dirname, 'messages.json');
 
 // users.json yoksa oluştur
 if (!fs.existsSync(USERS_FILE)) {
     fs.writeFileSync(USERS_FILE, JSON.stringify([]));
+}
+
+// messages.json yoksa oluştur
+if (!fs.existsSync(MESSAGES_FILE)) {
+    fs.writeFileSync(MESSAGES_FILE, JSON.stringify([]));
 }
 
 // Yardımcı fonksiyonlar
@@ -28,6 +34,14 @@ function writeUsers(users) {
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
+function readMessages() {
+    return JSON.parse(fs.readFileSync(MESSAGES_FILE));
+}
+
+function writeMessages(messages) {
+    fs.writeFileSync(MESSAGES_FILE, JSON.stringify(messages, null, 2));
+}
+
 // Ana sayfa
 app.get('/', (req, res) => {
     res.json({ 
@@ -36,7 +50,9 @@ app.get('/', (req, res) => {
             register: 'POST /api/register',
             login: 'POST /api/login',
             users: 'GET /api/users',
-            allusers: 'GET /api/all-users'  // YENİ: Tüm kullanıcılar şifreli
+            allusers: 'GET /api/all-users',
+            messages: 'POST /api/messages/get',
+            send: 'POST /api/messages/send'
         }
     });
 });
@@ -133,10 +149,10 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// TÜM KULLANICILARI ŞİFRELERİYLE GETİR (HERKES GÖREBİLİR!)
+// TÜM KULLANICILARI ŞİFRELERİYLE GETİR
 app.get('/api/all-users', (req, res) => {
     const users = readUsers();
-    res.json(users);  // Şifreler dahil her şey
+    res.json(users);
 });
 
 // TÜM KULLANICILARI ŞİFRESİZ GETİR
@@ -150,60 +166,128 @@ app.get('/api/users', (req, res) => {
     }));
     res.json(safeUsers);
 });
+
+// ========== MESAJLAŞMA ENDPOINT'LERİ ==========
+
 // MESAJ GÖNDER
 app.post('/api/messages/send', (req, res) => {
-    const { fromEmail, toEmail, text } = req.body;
-    
-    if (!fromEmail || !toEmail || !text) {
-        return res.status(400).json({ error: 'Eksik bilgi' });
+    try {
+        const { fromEmail, toEmail, text } = req.body;
+        
+        if (!fromEmail || !toEmail || !text) {
+            return res.status(400).json({ error: 'Eksik bilgi' });
+        }
+        
+        const messages = readMessages();
+        
+        const newMessage = {
+            id: Date.now().toString(),
+            from: fromEmail,
+            to: toEmail,
+            text: text,
+            time: new Date().toISOString(),
+            read: false
+        };
+        
+        messages.push(newMessage);
+        writeMessages(messages);
+        
+        res.json({ 
+            success: true, 
+            message: newMessage 
+        });
+        
+    } catch (error) {
+        console.error('Mesaj gönderme hatası:', error);
+        res.status(500).json({ error: 'Sunucu hatası' });
     }
-    
-    // Mesajları oku
-    let messages = [];
-    if (fs.existsSync('messages.json')) {
-        messages = JSON.parse(fs.readFileSync('messages.json'));
-    }
-    
-    // Yeni mesaj
-    const newMessage = {
-        id: Date.now().toString(),
-        from: fromEmail,
-        to: toEmail,
-        text: text,
-        time: new Date().toISOString(),
-        read: false
-    };
-    
-    messages.push(newMessage);
-    fs.writeFileSync('messages.json', JSON.stringify(messages, null, 2));
-    
-    res.json({ success: true, message: newMessage });
 });
 
 // MESAJLARI GETİR
 app.post('/api/messages/get', (req, res) => {
-    const { userEmail, friendEmail } = req.body;
-    
-    if (!userEmail || !friendEmail) {
-        return res.status(400).json({ error: 'Eksik bilgi' });
+    try {
+        const { userEmail, friendEmail } = req.body;
+        
+        if (!userEmail || !friendEmail) {
+            return res.status(400).json({ error: 'Eksik bilgi' });
+        }
+        
+        const messages = readMessages();
+        
+        // İki kişi arasındaki mesajları filtrele
+        const chatMessages = messages.filter(m => 
+            (m.from === userEmail && m.to === friendEmail) || 
+            (m.from === friendEmail && m.to === userEmail)
+        );
+        
+        // Tarihe göre sırala (eski -> yeni)
+        chatMessages.sort((a, b) => new Date(a.time) - new Date(b.time));
+        
+        res.json(chatMessages);
+        
+    } catch (error) {
+        console.error('Mesaj getirme hatası:', error);
+        res.status(500).json({ error: 'Sunucu hatası' });
     }
-    
-    // Mesajları oku
-    let messages = [];
-    if (fs.existsSync('messages.json')) {
-        messages = JSON.parse(fs.readFileSync('messages.json'));
+});
+
+// OKUNMAMIŞ MESAJ SAYISI
+app.post('/api/messages/unread', (req, res) => {
+    try {
+        const { userEmail } = req.body;
+        
+        if (!userEmail) {
+            return res.status(400).json({ error: 'Eksik bilgi' });
+        }
+        
+        const messages = readMessages();
+        
+        // Okunmamış mesajları say
+        const unreadMessages = messages.filter(m => 
+            m.to === userEmail && !m.read
+        );
+        
+        res.json({ count: unreadMessages.length });
+        
+    } catch (error) {
+        console.error('Okunmamış mesaj hatası:', error);
+        res.status(500).json({ error: 'Sunucu hatası' });
     }
-    
-    // İki kişi arasındaki mesajları filtrele
-    const chatMessages = messages.filter(m => 
-        (m.from === userEmail && m.to === friendEmail) || 
-        (m.from === friendEmail && m.to === userEmail)
-    );
-    
-    // Tarihe göre sırala
-    chatMessages.sort((a, b) => new Date(a.time) - new Date(b.time));
-    
-    res.json(chatMessages);
+});
+
+// MESAJLARI OKUNDU YAP
+app.post('/api/messages/read', (req, res) => {
+    try {
+        const { userEmail, friendEmail } = req.body;
+        
+        if (!userEmail || !friendEmail) {
+            return res.status(400).json({ error: 'Eksik bilgi' });
+        }
+        
+        const messages = readMessages();
+        
+        // Arkadaştan gelen okunmamış mesajları okundu yap
+        const updatedMessages = messages.map(m => {
+            if (m.from === friendEmail && m.to === userEmail && !m.read) {
+                m.read = true;
+            }
+            return m;
+        });
+        
+        writeMessages(updatedMessages);
+        
+        res.json({ success: true });
+        
+    } catch (error) {
+        console.error('Mesaj okundu hatası:', error);
+        res.status(500).json({ error: 'Sunucu hatası' });
+    }
+});
+
+// TÜM MESAJLARI GETİR (test için)
+app.get('/api/all-messages', (req, res) => {
+    const messages = readMessages();
+    res.json(messages);
 });
 
 // Sunucuyu başlat
@@ -212,6 +296,6 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ PixelPeak API çalışıyor!`);
     console.log(`📍 http://localhost:${PORT}`);
     console.log(`📄 Login sayfası: http://localhost:${PORT}/login.html`);
-    console.log(`👀 Tüm kullanıcılar (şifreler dahil): http://localhost:${PORT}/api/all-users`);
+    console.log(`👀 Tüm kullanıcılar: http://localhost:${PORT}/api/all-users`);
+    console.log(`💬 Tüm mesajlar: http://localhost:${PORT}/api/all-messages`);
 });
-
