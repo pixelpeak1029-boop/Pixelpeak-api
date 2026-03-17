@@ -10,10 +10,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
-app.get('/login.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'login.html'));
-});
+app.use(express.static(path.join(__dirname))); // HTML dosyalarını servis et
 
 const USERS_FILE = path.join(__dirname, 'users.json');
 
@@ -38,12 +35,13 @@ app.get('/', (req, res) => {
         endpoints: {
             register: 'POST /api/register',
             login: 'POST /api/login',
-            users: 'GET /api/users'
+            users: 'GET /api/users',
+            allusers: 'GET /api/all-users'  // YENİ: Tüm kullanıcılar şifreli
         }
     });
 });
 
-// KAYIT OL
+// KAYIT OL (DÜZ METİN ŞİFRE!)
 app.post('/api/register', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -58,12 +56,13 @@ app.post('/api/register', async (req, res) => {
             return res.status(400).json({ error: 'Bu email zaten kayıtlı' });
         }
         
-         const hashedPassword = password;
+        // Şifreleme YOK! Düz metin kaydet
+        // const hashedPassword = await bcrypt.hash(password, 10);  // KAPATILDI
         
         const newUser = {
             id: Date.now().toString(),
             email,
-            password: hashedPassword,
+            password: password,  // DÜZ METİN ŞİFRE!
             name: email.split('@')[0],
             avatar: '👤',
             friends: [],
@@ -95,7 +94,7 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// GİRİŞ YAP
+// GİRİŞ YAP (DÜZ METİN KONTROL!)
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -107,8 +106,8 @@ app.post('/api/login', async (req, res) => {
             return res.status(401).json({ error: 'Email veya şifre hatalı' });
         }
         
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) {
+        // DÜZ METİN KONTROL!
+        if (user.password !== password) {
             return res.status(401).json({ error: 'Email veya şifre hatalı' });
         }
         
@@ -134,7 +133,13 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// TÜM KULLANICILARI GETİR
+// TÜM KULLANICILARI ŞİFRELERİYLE GETİR (HERKES GÖREBİLİR!)
+app.get('/api/all-users', (req, res) => {
+    const users = readUsers();
+    res.json(users);  // Şifreler dahil her şey
+});
+
+// TÜM KULLANICILARI ŞİFRESİZ GETİR
 app.get('/api/users', (req, res) => {
     const users = readUsers();
     const safeUsers = users.map(u => ({
@@ -152,9 +157,5 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ PixelPeak API çalışıyor!`);
     console.log(`📍 http://localhost:${PORT}`);
     console.log(`📄 Login sayfası: http://localhost:${PORT}/login.html`);
-});
-// TÜM KULLANICILARI ŞİFRELERİYLE GETİR (SADECE SEN KULLAN!)
-app.get('/api/all-users-with-passwords', (req, res) => {
-    const users = readUsers();
-    res.json(users);  // Şifreler dahil tüm bilgiler
+    console.log(`👀 Tüm kullanıcılar (şifreler dahil): http://localhost:${PORT}/api/all-users`);
 });
