@@ -938,6 +938,7 @@
             if (!friendEmail) return;
             
             try {
+                console.log('Mesajlar yükleniyor...', friendEmail);
                 const response = await fetch(`${API_URL}/messages/get`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -947,7 +948,13 @@
                     })
                 });
 
+                if (!response.ok) {
+                    throw new Error('HTTP hata ' + response.status);
+                }
+
                 const messages = await response.json();
+                console.log('Gelen mesajlar:', messages);
+                
                 const messagesArea = document.getElementById('messagesArea');
                 
                 if (messages.length === 0) {
@@ -980,6 +987,12 @@
                 
             } catch (error) {
                 console.error('Mesaj yükleme hatası:', error);
+                document.getElementById('messagesArea').innerHTML = `
+                    <div style="text-align: center; color: #e50914; padding: 20px;">
+                        ❌ Mesajlar yüklenemedi!<br>
+                        <small>${error.message}</small>
+                    </div>
+                `;
             }
         }
 
@@ -988,7 +1001,16 @@
             const input = document.getElementById('messageInput');
             const text = input.value.trim();
             
-            if (!text || !currentChatFriend) return;
+            if (!text || !currentChatFriend) {
+                alert('Mesaj yaz veya bir arkadaş seç!');
+                return;
+            }
+
+            console.log('Mesaj gönderiliyor:', {
+                from: currentUser.email,
+                to: currentChatFriend.email,
+                text: text
+            });
 
             try {
                 const response = await fetch(`${API_URL}/messages/send`, {
@@ -1002,16 +1024,17 @@
                 });
 
                 const data = await response.json();
+                console.log('Gönderim cevabı:', data);
                 
                 if (data.success) {
                     input.value = '';
                     await loadMessages(currentChatFriend.email);
                 } else {
-                    alert('Mesaj gönderilemedi!');
+                    alert('Mesaj gönderilemedi: ' + (data.error || 'Bilinmeyen hata'));
                 }
             } catch (error) {
                 console.error('Mesaj hatası:', error);
-                alert('Sunucu hatası!');
+                alert('Sunucu hatası: ' + error.message);
             }
         });
 
