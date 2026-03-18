@@ -1139,9 +1139,98 @@ body {
             }
         }, 1000);
     })();
-</script>
-</body>
-</html>
+// ===== SON ÇARE - TÜM BUTONLARI YENİDEN BAĞLA =====
+(function fixAllButtons() {
+    console.log('🔄 Tüm butonlar yeniden bağlanıyor...');
+    
+    setTimeout(function() {
+        // FİLM/DİZİ BUTONLARI
+        const filmBtn = document.getElementById('filmBtn');
+        const diziBtn = document.getElementById('diziBtn');
+        const filmIcerik = document.querySelector('.filmler-content');
+        const diziIcerik = document.querySelector('.diziler-content');
+        
+        if (filmBtn && diziBtn && filmIcerik && diziIcerik) {
+            // Eski eventleri temizle
+            filmBtn.replaceWith(filmBtn.cloneNode(true));
+            diziBtn.replaceWith(diziBtn.cloneNode(true));
+            
+            // Yeni butonları al
+            const yeniFilm = document.getElementById('filmBtn');
+            const yeniDizi = document.getElementById('diziBtn');
+            
+            // Event ekle
+            yeniFilm.addEventListener('click', function(e) {
+                e.preventDefault();
+                yeniFilm.classList.add('active');
+                yeniDizi.classList.remove('active');
+                filmIcerik.style.display = 'block';
+                diziIcerik.style.display = 'none';
+                console.log('Film butonu çalıştı');
+            });
+            
+            yeniDizi.addEventListener('click', function(e) {
+                e.preventDefault();
+                yeniDizi.classList.add('active');
+                yeniFilm.classList.remove('active');
+                filmIcerik.style.display = 'none';
+                diziIcerik.style.display = 'block';
+                console.log('Dizi butonu çalıştı');
+            });
+            
+            // Başlangıç
+            yeniFilm.classList.add('active');
+            yeniDizi.classList.remove('active');
+            filmIcerik.style.display = 'block';
+            diziIcerik.style.display = 'none';
+        }
+        
+        // CHAT BUTONU
+        const chatBtn = document.getElementById('chatBtn');
+        const chatPanel = document.getElementById('chatPanel');
+        const overlay = document.getElementById('overlay');
+        
+        if (chatBtn && chatPanel && overlay) {
+            chatBtn.replaceWith(chatBtn.cloneNode(true));
+            const yeniChat = document.getElementById('chatBtn');
+            
+            yeniChat.addEventListener('click', function(e) {
+                e.preventDefault();
+                chatPanel.classList.add('open');
+                overlay.classList.add('show');
+                console.log('Chat butonu çalıştı');
+            });
+        }
+        
+        // CHAT KAPATMA BUTONU
+        const closeChat = document.getElementById('closeChat');
+        if (closeChat && chatPanel && overlay) {
+            closeChat.replaceWith(closeChat.cloneNode(true));
+            const yeniClose = document.getElementById('closeChat');
+            
+            yeniClose.addEventListener('click', function(e) {
+                e.preventDefault();
+                chatPanel.classList.remove('open');
+                overlay.classList.remove('show');
+                console.log('Chat kapandı');
+            });
+        }
+        
+        // OVERLAY (dışarı tıklayınca kapat)
+        if (overlay && chatPanel) {
+            overlay.replaceWith(overlay.cloneNode(true));
+            const yeniOverlay = document.getElementById('overlay');
+            
+            yeniOverlay.addEventListener('click', function() {
+                chatPanel.classList.remove('open');
+                yeniOverlay.classList.remove('show');
+                console.log('Overlay ile kapandı');
+            });
+        }
+        
+        console.log('✅ Tüm butonlar yeniden bağlandı!');
+    }, 1500); // 1.5 saniye bekle
+})();
 </script>
 </body>
 </html>
