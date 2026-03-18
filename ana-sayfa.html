@@ -988,7 +988,33 @@ body {
             document.getElementById('messageScreen').classList.remove('active');
         });
 
-        
+        // ===== FİLM/DİZİ GEÇİŞİ (TEK VE DOĞRU) =====
+        function setupFilmDiziGecisi() {
+            const filmBtn = document.getElementById('filmBtn');
+            const diziBtn = document.getElementById('diziBtn');
+            const filmIcerik = document.querySelector('.filmler-content');
+            const diziIcerik = document.querySelector('.diziler-content');
+            
+            if (filmBtn && diziBtn && filmIcerik && diziIcerik) {
+                filmBtn.addEventListener('click', function() {
+                    filmBtn.classList.add('active');
+                    diziBtn.classList.remove('active');
+                    filmIcerik.style.display = 'block';
+                    diziIcerik.style.display = 'none';
+                });
+
+                diziBtn.addEventListener('click', function() {
+                    diziBtn.classList.add('active');
+                    filmBtn.classList.remove('active');
+                    filmIcerik.style.display = 'none';
+                    diziIcerik.style.display = 'block';
+                });
+
+                // Varsayılan olarak filmler gösterilsin
+                filmIcerik.style.display = 'block';
+                diziIcerik.style.display = 'none';
+            }
+        }
 
         // ===== ARKADAŞ EKLEME BUTONU =====
         document.getElementById('addFriendBtn').addEventListener('click', function() {
@@ -1097,6 +1123,11 @@ body {
                 container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
             });
         }
+
+        // Sayfa yüklendiğinde Film/Dizi geçişini kur
+        document.addEventListener('DOMContentLoaded', function() {
+            setupFilmDiziGecisi();
+        });
 </script>
 </body>
 </html>
