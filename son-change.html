@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PixelPeak - SON ŞANS</title>
+    <style>
+        body { background: black; color: white; font-family: Arial; text-align: center; padding: 20px; }
+        button { background: red; color: white; padding: 20px; margin: 10px; font-size: 24px; border-radius: 10px; width: 80%; }
+        #sonuc { margin-top: 30px; font-size: 20px; color: lime; padding: 20px; border: 1px solid gray; }
+    </style>
+</head>
+<body>
+    <h1 style="color:red">🔥 PIXELPEAK - SON ŞANS 🔥</h1>
+    <button id="testBtn">🚀 TEST BUTONU</button>
+    <div id="sonuc">⏳ Bekleniyor...</div>
+
+    <script>
+        // Sayfa yüklendiğinde mesaj
+        document.getElementById('sonuc').innerHTML = '✅ JavaScript çalışıyor! ' + new Date();
+        
+        // Butona tıklanınca
+        document.getElementById('testBtn').onclick = function() {
+            document.getElementById('sonuc').innerHTML = '🎉 BUTON ÇALIŞTI! Tıklama zamanı: ' + new Date();
+        };
+        
+        // 2 saniye sonra test
+        setTimeout(function() {
+            document.getElementById('sonuc').innerHTML += '<br>⏱️ 2 saniye geçti - hala çalışıyor!';
+        }, 2000);
+    </script>
+</body>
+</html>
