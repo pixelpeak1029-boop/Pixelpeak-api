@@ -744,412 +744,387 @@ body {
 </div>
 
     <script>
-        const API_URL = 'https://pixelpeak-api.onrender.com/api';
-        let currentUser = null;
-        let allUsers = [];
-        let friends = [];
-        let currentChatFriend = null;
+    // === YENİ SADE VE ÇALIŞAN KOD ===
+    const API_URL = 'https://pixelpeak-api.onrender.com/api';
+    let currentUser = null;
+    let allUsers = [];
+    let friends = [];
+    let currentChatFriend = null;
 
-        // ===== GİRİŞ YAPAN KULLANICIYI AL =====
-        (async function init() {
-            const storedUser = localStorage.getItem('pixelpeak_user');
-            const token = localStorage.getItem('pixelpeak_token');
-            
-            if (storedUser && token) {
-                currentUser = JSON.parse(storedUser);
-                document.getElementById('userEmail').textContent = currentUser.email;
-                document.getElementById('userName').textContent = currentUser.name || currentUser.email.split('@')[0];
-                document.getElementById('profileAvatar').textContent = currentUser.avatar || '👤';
-                document.getElementById('profileBtn').textContent = currentUser.avatar || '👤';
-                
-                await loadAllUsers();
-                await loadPopularMovies();
-                await loadActionMovies();
-                await loadComedyMovies();
-                await loadScifiMovies();
-                await loadPopularTVShows();
-                await loadActionTV();
-                await loadComedyTV();
-                await loadScifiTV();
-                loadFriends();
-                
-                setInterval(loadAllUsers, 10000);
-            } else {
-                window.location.href = '/login.html';
-            }
-        })();
+    (async function init() {
+        const storedUser = localStorage.getItem('pixelpeak_user');
+        const token = localStorage.getItem('pixelpeak_token');
+        if (storedUser && token) {
+            currentUser = JSON.parse(storedUser);
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('userName').textContent = currentUser.name || currentUser.email.split('@')[0];
+            document.getElementById('profileAvatar').textContent = currentUser.avatar || '👤';
+            document.getElementById('profileBtn').textContent = currentUser.avatar || '👤';
 
-        // ===== TÜM KULLANICILARI GETİR =====
-        async function loadAllUsers() {
-            try {
-                const response = await fetch(`${API_URL}/all-users`);
-                const data = await response.json();
-                allUsers = data.map(u => ({
-                    id: u.id,
-                    email: u.email,
-                    name: u.name || u.email.split('@')[0],
-                    avatar: u.avatar || '👤'
-                }));
-                const otherUsers = allUsers.filter(u => u.email !== currentUser.email);
-                displayUsers(otherUsers);
-            } catch (error) {
-                console.error('Kullanıcılar yüklenemedi:', error);
-            }
+            await loadAllUsers();
+            await loadPopularMovies();
+            await loadActionMovies();
+            await loadComedyMovies();
+            await loadScifiMovies();
+            await loadPopularTVShows();
+            await loadActionTV();
+            await loadComedyTV();
+            await loadScifiTV();
+            loadFriends();
+
+            setInterval(loadAllUsers, 10000);
+        } else {
+            window.location.href = '/login.html';
         }
+    })();
 
-        // ===== ARKADAŞLARI YÜKLE =====
-        function loadFriends() {
-            try {
-                const savedFriends = localStorage.getItem(`friends_${currentUser.email}`);
-                if (savedFriends) {
-                    friends = JSON.parse(savedFriends);
-                } else {
-                    friends = [];
-                }
-                displayFriends();
-            } catch (error) {
-                console.error('Arkadaşlar yüklenemedi:', error);
+    // ===== TÜM KULLANICILARI GETİR =====
+    async function loadAllUsers() {
+        try {
+            const response = await fetch(`${API_URL}/all-users`);
+            const data = await response.json();
+            allUsers = data.map(u => ({
+                id: u.id,
+                email: u.email,
+                name: u.name || u.email.split('@')[0],
+                avatar: u.avatar || '👤'
+            }));
+            const otherUsers = allUsers.filter(u => u.email !== currentUser.email);
+            displayUsers(otherUsers);
+        } catch (error) {
+            console.error('Kullanıcılar yüklenemedi:', error);
+        }
+    }
+
+    function loadFriends() {
+        try {
+            const savedFriends = localStorage.getItem(`friends_${currentUser.email}`);
+            if (savedFriends) {
+                friends = JSON.parse(savedFriends);
+            } else {
                 friends = [];
             }
-        }
-
-        function saveFriends() {
-            localStorage.setItem(`friends_${currentUser.email}`, JSON.stringify(friends));
-        }
-
-        // ===== KULLANICILARI GÖSTER =====
-        function displayUsers(users) {
-            const usersList = document.getElementById('usersList');
-            if (users.length === 0) {
-                usersList.innerHTML = `<div class="list-title">📋 Kayıtlı kullanıcılar</div><div style="padding:20px; text-align:center; color:#666;">Henüz başka kullanıcı yok.</div>`;
-                return;
-            }
-            let html = '<div class="list-title">📋 Kayıtlı kullanıcılar</div>';
-            users.slice(0, 30).forEach(user => {
-                const isFriend = friends.some(f => f.email === user.email);
-                html += `<div class="user-item" data-email="${user.email}" data-name="${user.name}"><div class="user-avatar-small">${user.avatar}</div><div class="user-info-small"><div class="user-name-small">${user.name}</div><div class="user-email-small">${user.email}</div></div>${!isFriend ? '<div class="add-badge" onclick="event.stopPropagation(); window.addFriend(\'' + user.email + '\')">➕ Ekle</div>' : '<div class="add-badge friend" onclick="event.stopPropagation(); window.openMessageScreen(\'' + user.name + '\', \'' + user.email + '\')">💬 Mesaj</div>'}</div>`;
-            });
-            usersList.innerHTML = html;
-            document.querySelectorAll('#allUsersContent .user-item').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    if (e.target.classList.contains('add-badge')) return;
-                    window.openMessageScreen(this.dataset.name, this.dataset.email);
-                });
-            });
-        }
-
-        // ===== ARKADAŞLARI GÖSTER =====
-        function displayFriends() {
-            const friendsList = document.getElementById('friendsList');
-            if (friends.length === 0) {
-                friendsList.innerHTML = `<div class="list-title">🤝 Arkadaşların</div><div style="padding:20px; text-align:center; color:#666;">Henüz arkadaşın yok.</div>`;
-                return;
-            }
-            let html = '<div class="list-title">🤝 Arkadaşların</div>';
-            friends.forEach(friend => {
-                html += `<div class="user-item" data-email="${friend.email}" data-name="${friend.name}"><div class="user-avatar-small">${friend.avatar || '👤'}</div><div class="user-info-small"><div class="user-name-small">${friend.name}</div><div class="user-email-small">${friend.email}</div></div><div class="add-badge friend" onclick="event.stopPropagation(); window.openMessageScreen('${friend.name}', '${friend.email}')">💬 Mesaj</div></div>`;
-            });
-            friendsList.innerHTML = html;
-            document.querySelectorAll('#friendsContent .user-item').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    if (e.target.classList.contains('add-badge')) return;
-                    window.openMessageScreen(this.dataset.name, this.dataset.email);
-                });
-            });
-        }
-
-        // ===== ARKADAŞ EKLE =====
-        window.addFriend = function(email) {
-            if (!email || email === currentUser.email) { alert('Kendini ekleyemezsin!'); return; }
-            const user = allUsers.find(u => u.email === email);
-            if (!user) { alert('Bu email ile kayıtlı kullanıcı bulunamadı!'); return; }
-            if (friends.some(f => f.email === email)) { alert('Bu kullanıcı zaten arkadaşın!'); return; }
-            const newFriend = { email: user.email, name: user.name, avatar: user.avatar || '👤' };
-            friends.push(newFriend);
-            saveFriends();
-            loadAllUsers();
             displayFriends();
-            alert('✅ Arkadaş eklendi!');
-        };
-
-        // ===== MESAJLAŞMA EKRANINI AÇ =====
-        window.openMessageScreen = function(name, email) {
-            currentChatFriend = { name, email };
-            document.getElementById('messageFriendName').textContent = name;
-            document.getElementById('messageFriendEmail').textContent = email;
-            document.getElementById('messageScreen').classList.add('active');
-            document.getElementById('overlay').classList.add('show');
-            loadMessages(email);
-        };
-
-        // ===== MESAJLARI YÜKLE =====
-        async function loadMessages(friendEmail) {
-            if (!friendEmail) return;
-            try {
-                const response = await fetch(`${API_URL}/messages/get`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userEmail: currentUser.email, friendEmail })
-                });
-                if (!response.ok) throw new Error('HTTP hata ' + response.status);
-                const messages = await response.json();
-                const messagesArea = document.getElementById('messagesArea');
-                if (messages.length === 0) {
-                    messagesArea.innerHTML = `<div style="text-align:center; color:#666; padding:20px;">💬 Henüz mesaj yok. İlk mesajı sen yaz!</div>`;
-                    return;
-                }
-                let html = '';
-                messages.forEach(msg => {
-                    const isSent = msg.from === currentUser.email;
-                    const messageTime = new Date(msg.time).toLocaleTimeString('tr-TR', { hour:'2-digit', minute:'2-digit' });
-                    html += `<div class="message-bubble ${isSent ? 'sent' : 'received'}">${msg.text}<div class="message-time">${messageTime}</div></div>`;
-                });
-                messagesArea.innerHTML = html;
-                messagesArea.scrollTop = messagesArea.scrollHeight;
-            } catch (error) {
-                document.getElementById('messagesArea').innerHTML = `<div style="text-align:center; color:#e50914; padding:20px;">❌ Mesajlar yüklenemedi!<br><small>${error.message}</small></div>`;
-            }
+        } catch (error) {
+            console.error('Arkadaşlar yüklenemedi:', error);
+            friends = [];
         }
-
-        // ===== MESAJ GÖNDER =====
-        document.getElementById('sendMessageBtn').addEventListener('click', async function() {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            if (!text || !currentChatFriend) { alert('Mesaj yaz veya bir arkadaş seç!'); return; }
-            try {
-                const response = await fetch(`${API_URL}/messages/send`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ fromEmail: currentUser.email, toEmail: currentChatFriend.email, text })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    input.value = '';
-                    await loadMessages(currentChatFriend.email);
-                } else {
-                    alert('Mesaj gönderilemedi: ' + (data.error || 'Bilinmeyen hata'));
-                }
-            } catch (error) {
-                alert('Sunucu hatası: ' + error.message);
-            }
-        });
-
-        // ===== MESAJ KONTROL =====
-        setInterval(async () => {
-            if (currentChatFriend) await loadMessages(currentChatFriend.email);
-        }, 2000);
-
-        document.getElementById('messageInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') document.getElementById('sendMessageBtn').click();
-        });
-
-        document.getElementById('closeMessageScreen').addEventListener('click', function() {
-            document.getElementById('messageScreen').classList.remove('active');
-            document.getElementById('overlay').classList.remove('show');
-            currentChatFriend = null;
-        });
-
-        // ===== SEKMELER =====
-        document.getElementById('allUsersTab').addEventListener('click', function() {
-            document.getElementById('allUsersTab').classList.add('active');
-            document.getElementById('friendsTab').classList.remove('active');
-            document.getElementById('allUsersContent').classList.add('active');
-            document.getElementById('friendsContent').classList.remove('active');
-        });
-
-        document.getElementById('friendsTab').addEventListener('click', function() {
-            document.getElementById('friendsTab').classList.add('active');
-            document.getElementById('allUsersTab').classList.remove('active');
-            document.getElementById('friendsContent').classList.add('active');
-            document.getElementById('allUsersContent').classList.remove('active');
-            displayFriends();
-        });
-
-        // ===== CHAT PANELİ =====
-        const chatBtn = document.getElementById('chatBtn');
-        const chatPanel = document.getElementById('chatPanel');
-        const closeChat = document.getElementById('closeChat');
-        const overlay = document.getElementById('overlay');
-        
-        chatBtn.addEventListener('click', () => {
-            chatPanel.classList.add('open');
-            overlay.classList.add('show');
-        });
-        
-        closeChat.addEventListener('click', () => {
-            chatPanel.classList.remove('open');
-            overlay.classList.remove('show');
-            document.getElementById('messageScreen').classList.remove('active');
-        });
-
-        overlay.addEventListener('click', () => {
-            chatPanel.classList.remove('open');
-            overlay.classList.remove('show');
-            document.getElementById('messageScreen').classList.remove('active');
-        });
-
-        // ===== FİLM/DİZİ GEÇİŞİ (BASİT VE ÇALIŞAN) =====
-function setupFilmDiziGecisi() {
-    console.log('Film/Dizi geçişi kuruluyor...');
-    
-    // Elementleri seç
-    const filmBtn = document.getElementById('filmBtn');
-    const diziBtn = document.getElementById('diziBtn');
-    
-    // İçerikleri seç
-    const filmIcerik = document.querySelector('.filmler-content');
-    const diziIcerik = document.querySelector('.diziler-content');
-    
-    if (!filmBtn || !diziBtn || !filmIcerik || !diziIcerik) {
-        console.log('Elementler bulunamadı, tekrar deneniyor...');
-        setTimeout(setupFilmDiziGecisi, 500);
-        return;
     }
-    
-    console.log('Elementler bulundu, eventler ekleniyor');
-    
-    // Film butonu event'i
-    filmBtn.onclick = function(e) {
-        e.preventDefault();
-        console.log('Film butonu tıklandı');
-        filmBtn.classList.add('active');
-        diziBtn.classList.remove('active');
+
+    function saveFriends() {
+        localStorage.setItem(`friends_${currentUser.email}`, JSON.stringify(friends));
+    }
+
+    function displayUsers(users) {
+        const usersList = document.getElementById('usersList');
+        if (users.length === 0) {
+            usersList.innerHTML = `<div class="list-title">📋 Kayıtlı kullanıcılar</div><div style="padding:20px; text-align:center; color:#666;">Henüz başka kullanıcı yok.</div>`;
+            return;
+        }
+        let html = '<div class="list-title">📋 Kayıtlı kullanıcılar</div>';
+        users.slice(0, 30).forEach(user => {
+            const isFriend = friends.some(f => f.email === user.email);
+            html += `<div class="user-item" data-email="${user.email}" data-name="${user.name}"><div class="user-avatar-small">${user.avatar}</div><div class="user-info-small"><div class="user-name-small">${user.name}</div><div class="user-email-small">${user.email}</div></div>${!isFriend ? '<div class="add-badge" onclick="event.stopPropagation(); window.addFriend(\'' + user.email + '\')">➕ Ekle</div>' : '<div class="add-badge friend" onclick="event.stopPropagation(); window.openMessageScreen(\'' + user.name + '\', \'' + user.email + '\')">💬 Mesaj</div>'}</div>`;
+        });
+        usersList.innerHTML = html;
+        document.querySelectorAll('#allUsersContent .user-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.classList.contains('add-badge')) return;
+                window.openMessageScreen(this.dataset.name, this.dataset.email);
+            });
+        });
+    }
+
+    function displayFriends() {
+        const friendsList = document.getElementById('friendsList');
+        if (friends.length === 0) {
+            friendsList.innerHTML = `<div class="list-title">🤝 Arkadaşların</div><div style="padding:20px; text-align:center; color:#666;">Henüz arkadaşın yok.</div>`;
+            return;
+        }
+        let html = '<div class="list-title">🤝 Arkadaşların</div>';
+        friends.forEach(friend => {
+            html += `<div class="user-item" data-email="${friend.email}" data-name="${friend.name}"><div class="user-avatar-small">${friend.avatar || '👤'}</div><div class="user-info-small"><div class="user-name-small">${friend.name}</div><div class="user-email-small">${friend.email}</div></div><div class="add-badge friend" onclick="event.stopPropagation(); window.openMessageScreen('${friend.name}', '${friend.email}')">💬 Mesaj</div></div>`;
+        });
+        friendsList.innerHTML = html;
+        document.querySelectorAll('#friendsContent .user-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.classList.contains('add-badge')) return;
+                window.openMessageScreen(this.dataset.name, this.dataset.email);
+            });
+        });
+    }
+
+    window.addFriend = function(email) {
+        if (!email || email === currentUser.email) { alert('Kendini ekleyemezsin!'); return; }
+        const user = allUsers.find(u => u.email === email);
+        if (!user) { alert('Bu email ile kayıtlı kullanıcı bulunamadı!'); return; }
+        if (friends.some(f => f.email === email)) { alert('Bu kullanıcı zaten arkadaşın!'); return; }
+        const newFriend = { email: user.email, name: user.name, avatar: user.avatar || '👤' };
+        friends.push(newFriend);
+        saveFriends();
+        loadAllUsers();
+        displayFriends();
+        alert('✅ Arkadaş eklendi!');
+    };
+
+    window.openMessageScreen = function(name, email) {
+        currentChatFriend = { name, email };
+        document.getElementById('messageFriendName').textContent = name;
+        document.getElementById('messageFriendEmail').textContent = email;
+        document.getElementById('messageScreen').classList.add('active');
+        document.getElementById('overlay').classList.add('show');
+        loadMessages(email);
+    };
+
+    async function loadMessages(friendEmail) {
+        if (!friendEmail) return;
+        try {
+            const response = await fetch(`${API_URL}/messages/get`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userEmail: currentUser.email, friendEmail })
+            });
+            if (!response.ok) throw new Error('HTTP hata ' + response.status);
+            const messages = await response.json();
+            const messagesArea = document.getElementById('messagesArea');
+            if (messages.length === 0) {
+                messagesArea.innerHTML = `<div style="text-align:center; color:#666; padding:20px;">💬 Henüz mesaj yok. İlk mesajı sen yaz!</div>`;
+                return;
+            }
+            let html = '';
+            messages.forEach(msg => {
+                const isSent = msg.from === currentUser.email;
+                const messageTime = new Date(msg.time).toLocaleTimeString('tr-TR', { hour:'2-digit', minute:'2-digit' });
+                html += `<div class="message-bubble ${isSent ? 'sent' : 'received'}">${msg.text}<div class="message-time">${messageTime}</div></div>`;
+            });
+            messagesArea.innerHTML = html;
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        } catch (error) {
+            document.getElementById('messagesArea').innerHTML = `<div style="text-align:center; color:#e50914; padding:20px;">❌ Mesajlar yüklenemedi!<br><small>${error.message}</small></div>`;
+        }
+    }
+
+    document.getElementById('sendMessageBtn').addEventListener('click', async function() {
+        const input = document.getElementById('messageInput');
+        const text = input.value.trim();
+        if (!text || !currentChatFriend) { alert('Mesaj yaz veya bir arkadaş seç!'); return; }
+        try {
+            const response = await fetch(`${API_URL}/messages/send`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fromEmail: currentUser.email, toEmail: currentChatFriend.email, text })
+            });
+            const data = await response.json();
+            if (data.success) {
+                input.value = '';
+                await loadMessages(currentChatFriend.email);
+            } else {
+                alert('Mesaj gönderilemedi: ' + (data.error || 'Bilinmeyen hata'));
+            }
+        } catch (error) {
+            alert('Sunucu hatası: ' + error.message);
+        }
+    });
+
+    setInterval(async () => {
+        if (currentChatFriend) await loadMessages(currentChatFriend.email);
+    }, 2000);
+
+    document.getElementById('messageInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') document.getElementById('sendMessageBtn').click();
+    });
+
+    document.getElementById('closeMessageScreen').addEventListener('click', function() {
+        document.getElementById('messageScreen').classList.remove('active');
+        document.getElementById('overlay').classList.remove('show');
+        currentChatFriend = null;
+    });
+
+    document.getElementById('allUsersTab').addEventListener('click', function() {
+        document.getElementById('allUsersTab').classList.add('active');
+        document.getElementById('friendsTab').classList.remove('active');
+        document.getElementById('allUsersContent').classList.add('active');
+        document.getElementById('friendsContent').classList.remove('active');
+    });
+
+    document.getElementById('friendsTab').addEventListener('click', function() {
+        document.getElementById('friendsTab').classList.add('active');
+        document.getElementById('allUsersTab').classList.remove('active');
+        document.getElementById('friendsContent').classList.add('active');
+        document.getElementById('allUsersContent').classList.remove('active');
+        displayFriends();
+    });
+
+    const chatBtn = document.getElementById('chatBtn');
+    const chatPanel = document.getElementById('chatPanel');
+    const closeChat = document.getElementById('closeChat');
+    const overlay = document.getElementById('overlay');
+
+    chatBtn.addEventListener('click', () => {
+        chatPanel.classList.add('open');
+        overlay.classList.add('show');
+    });
+
+    closeChat.addEventListener('click', () => {
+        chatPanel.classList.remove('open');
+        overlay.classList.remove('show');
+        document.getElementById('messageScreen').classList.remove('active');
+    });
+
+    overlay.addEventListener('click', () => {
+        chatPanel.classList.remove('open');
+        overlay.classList.remove('show');
+        document.getElementById('messageScreen').classList.remove('active');
+    });
+
+    document.getElementById('addFriendBtn').addEventListener('click', function() {
+        const email = document.getElementById('friendEmail').value.trim();
+        window.addFriend(email);
+        document.getElementById('friendEmail').value = '';
+    });
+
+    document.getElementById('friendEmail').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') document.getElementById('addFriendBtn').click();
+    });
+
+    // ===== FİLM/DİZİ GEÇİŞİ - ÇOK BASİT VERSİYON =====
+    (function setupFilmDizi() {
+        console.log('Film/Dizi geçişi kuruluyor...');
+        const filmBtn = document.getElementById('filmBtn');
+        const diziBtn = document.getElementById('diziBtn');
+        const filmIcerik = document.querySelector('.filmler-content');
+        const diziIcerik = document.querySelector('.diziler-content');
+
+        if (!filmBtn || !diziBtn || !filmIcerik || !diziIcerik) {
+            console.log('Elementler bulunamadı, tekrar deneniyor...');
+            setTimeout(setupFilmDizi, 500);
+            return;
+        }
+
+        // Film butonuna tıklanınca
+        filmBtn.onclick = function(e) {
+            e.preventDefault();
+            filmBtn.classList.add('active');
+            diziBtn.classList.remove('active');
+            filmIcerik.style.display = 'block';
+            diziIcerik.style.display = 'none';
+            console.log('Filmler gösteriliyor');
+        };
+
+        // Dizi butonuna tıklanınca
+        diziBtn.onclick = function(e) {
+            e.preventDefault();
+            diziBtn.classList.add('active');
+            filmBtn.classList.remove('active');
+            filmIcerik.style.display = 'none';
+            diziIcerik.style.display = 'block';
+            console.log('Diziler gösteriliyor');
+        };
+
+        // Başlangıç durumu
         filmIcerik.style.display = 'block';
         diziIcerik.style.display = 'none';
-    };
-    
-    // Dizi butonu event'i
-    diziBtn.onclick = function(e) {
-        e.preventDefault();
-        console.log('Dizi butonu tıklandı');
-        diziBtn.classList.add('active');
-        filmBtn.classList.remove('active');
-        filmIcerik.style.display = 'none';
-        diziIcerik.style.display = 'block';
-    };
-    
-    // Varsayılan
-    filmIcerik.style.display = 'block';
-    diziIcerik.style.display = 'none';
-    
-    console.log('Film/Dizi geçişi kuruldu');
-}
-        // ===== ARKADAŞ EKLEME BUTONU =====
-        document.getElementById('addFriendBtn').addEventListener('click', function() {
-            const email = document.getElementById('friendEmail').value.trim();
-            window.addFriend(email);
-            document.getElementById('friendEmail').value = '';
+        filmBtn.classList.add('active');
+        diziBtn.classList.remove('active');
+        console.log('Film/Dizi geçişi hazır');
+    })();
+
+    // ===== FİLM YÜKLEME FONKSİYONLARI =====
+    async function loadPopularMovies() {
+        const res = await fetch(`${API_URL}/movies/popular`);
+        const data = await res.json();
+        const container = document.getElementById('popularMovies');
+        if (!container) return;
+        container.innerHTML = '';
+        data.slice(0, 10).forEach(m => {
+            const img = m.poster_path ? `https://image.tmdb.org/t/p/w200${m.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
+            container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${m.id}&type=movie'"><img src="${img}" alt="${m.title}"><div class="card-title">${m.title}</div><div class="card-meta"><span class="match">${Math.round(m.vote_average * 10)}%</span><span>${m.release_date ? m.release_date.substring(0,4) : '?'}</span></div></div>`;
         });
+    }
 
-        document.getElementById('friendEmail').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') document.getElementById('addFriendBtn').click();
+    async function loadActionMovies() {
+        const res = await fetch(`${API_URL}/movies/category/28`);
+        const data = await res.json();
+        const container = document.getElementById('actionMovies');
+        if (!container) return;
+        container.innerHTML = '';
+        data.slice(0, 10).forEach(m => {
+            const img = m.poster_path ? `https://image.tmdb.org/t/p/w200${m.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
+            container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${m.id}&type=movie'"><img src="${img}" alt="${m.title}"><div class="card-title">${m.title}</div><div class="card-meta"><span class="match">${Math.round(m.vote_average * 10)}%</span><span>${m.release_date ? m.release_date.substring(0,4) : '?'}</span></div></div>`;
         });
+    }
 
-        // ===== FİLM YÜKLEME FONKSİYONLARI =====
-        async function loadPopularMovies() {
-            const res = await fetch(`${API_URL}/movies/popular`);
-            const data = await res.json();
-            const container = document.getElementById('popularMovies');
-            if (!container) return;
-            container.innerHTML = '';
-            data.slice(0, 10).forEach(m => {
-                const img = m.poster_path ? `https://image.tmdb.org/t/p/w200${m.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${m.id}&type=movie'"><img src="${img}" alt="${m.title}"><div class="card-title">${m.title}</div><div class="card-meta"><span class="match">${Math.round(m.vote_average * 10)}%</span><span>${m.release_date ? m.release_date.substring(0,4) : '?'}</span></div></div>`;
-            });
-        }
+    async function loadComedyMovies() {
+        const res = await fetch(`${API_URL}/movies/category/35`);
+        const data = await res.json();
+        const container = document.getElementById('comedyMovies');
+        if (!container) return;
+        container.innerHTML = '';
+        data.slice(0, 10).forEach(m => {
+            const img = m.poster_path ? `https://image.tmdb.org/t/p/w200${m.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
+            container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${m.id}&type=movie'"><img src="${img}" alt="${m.title}"><div class="card-title">${m.title}</div><div class="card-meta"><span class="match">${Math.round(m.vote_average * 10)}%</span><span>${m.release_date ? m.release_date.substring(0,4) : '?'}</span></div></div>`;
+        });
+    }
 
-        async function loadActionMovies() {
-            const res = await fetch(`${API_URL}/movies/category/28`);
-            const data = await res.json();
-            const container = document.getElementById('actionMovies');
-            if (!container) return;
-            container.innerHTML = '';
-            data.slice(0, 10).forEach(m => {
-                const img = m.poster_path ? `https://image.tmdb.org/t/p/w200${m.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${m.id}&type=movie'"><img src="${img}" alt="${m.title}"><div class="card-title">${m.title}</div><div class="card-meta"><span class="match">${Math.round(m.vote_average * 10)}%</span><span>${m.release_date ? m.release_date.substring(0,4) : '?'}</span></div></div>`;
-            });
-        }
+    async function loadScifiMovies() {
+        const res = await fetch(`${API_URL}/movies/category/878`);
+        const data = await res.json();
+        const container = document.getElementById('scifiMovies');
+        if (!container) return;
+        container.innerHTML = '';
+        data.slice(0, 10).forEach(m => {
+            const img = m.poster_path ? `https://image.tmdb.org/t/p/w200${m.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
+            container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${m.id}&type=movie'"><img src="${img}" alt="${m.title}"><div class="card-title">${m.title}</div><div class="card-meta"><span class="match">${Math.round(m.vote_average * 10)}%</span><span>${m.release_date ? m.release_date.substring(0,4) : '?'}</span></div></div>`;
+        });
+    }
 
-        async function loadComedyMovies() {
-            const res = await fetch(`${API_URL}/movies/category/35`);
-            const data = await res.json();
-            const container = document.getElementById('comedyMovies');
-            if (!container) return;
-            container.innerHTML = '';
-            data.slice(0, 10).forEach(m => {
-                const img = m.poster_path ? `https://image.tmdb.org/t/p/w200${m.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${m.id}&type=movie'"><img src="${img}" alt="${m.title}"><div class="card-title">${m.title}</div><div class="card-meta"><span class="match">${Math.round(m.vote_average * 10)}%</span><span>${m.release_date ? m.release_date.substring(0,4) : '?'}</span></div></div>`;
-            });
-        }
+    async function loadPopularTVShows() {
+        const res = await fetch(`${API_URL}/tv/popular`);
+        const data = await res.json();
+        const container = document.getElementById('popularTVShows');
+        if (!container) return;
+        container.innerHTML = '';
+        data.slice(0, 10).forEach(s => {
+            const img = s.poster_path ? `https://image.tmdb.org/t/p/w200${s.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
+            container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
+        });
+    }
 
-        async function loadScifiMovies() {
-            const res = await fetch(`${API_URL}/movies/category/878`);
-            const data = await res.json();
-            const container = document.getElementById('scifiMovies');
-            if (!container) return;
-            container.innerHTML = '';
-            data.slice(0, 10).forEach(m => {
-                const img = m.poster_path ? `https://image.tmdb.org/t/p/w200${m.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${m.id}&type=movie'"><img src="${img}" alt="${m.title}"><div class="card-title">${m.title}</div><div class="card-meta"><span class="match">${Math.round(m.vote_average * 10)}%</span><span>${m.release_date ? m.release_date.substring(0,4) : '?'}</span></div></div>`;
-            });
-        }
+    async function loadActionTV() {
+        const res = await fetch(`${API_URL}/tv/category/10759`);
+        const data = await res.json();
+        const container = document.getElementById('actionTV');
+        if (!container) return;
+        container.innerHTML = '';
+        data.slice(0, 10).forEach(s => {
+            const img = s.poster_path ? `https://image.tmdb.org/t/p/w200${s.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
+            container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
+        });
+    }
 
-        async function loadPopularTVShows() {
-            const res = await fetch(`${API_URL}/tv/popular`);
-            const data = await res.json();
-            const container = document.getElementById('popularTVShows');
-            if (!container) return;
-            container.innerHTML = '';
-            data.slice(0, 10).forEach(s => {
-                const img = s.poster_path ? `https://image.tmdb.org/t/p/w200${s.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
-            });
-        }
+    async function loadComedyTV() {
+        const res = await fetch(`${API_URL}/tv/category/35`);
+        const data = await res.json();
+        const container = document.getElementById('comedyTV');
+        if (!container) return;
+        container.innerHTML = '';
+        data.slice(0, 10).forEach(s => {
+            const img = s.poster_path ? `https://image.tmdb.org/t/p/w200${s.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
+            container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
+        });
+    }
 
-        async function loadActionTV() {
-            const res = await fetch(`${API_URL}/tv/category/10759`);
-            const data = await res.json();
-            const container = document.getElementById('actionTV');
-            if (!container) return;
-            container.innerHTML = '';
-            data.slice(0, 10).forEach(s => {
-                const img = s.poster_path ? `https://image.tmdb.org/t/p/w200${s.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
-            });
-        }
-
-        async function loadComedyTV() {
-            const res = await fetch(`${API_URL}/tv/category/35`);
-            const data = await res.json();
-            const container = document.getElementById('comedyTV');
-            if (!container) return;
-            container.innerHTML = '';
-            data.slice(0, 10).forEach(s => {
-                const img = s.poster_path ? `https://image.tmdb.org/t/p/w200${s.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
-            });
-        }
-
-        async function loadScifiTV() {
-            const res = await fetch(`${API_URL}/tv/category/10765`);
-            const data = await res.json();
-            const container = document.getElementById('scifiTV');
-            if (!container) return;
-            container.innerHTML = '';
-            data.slice(0, 10).forEach(s => {
-                const img = s.poster_path ? `https://image.tmdb.org/t/p/w200${s.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
-            });
-        }
-
-        // Sayfa yüklendiğinde Film/Dizi geçişini kur
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(setupFilmDiziGecisi, 500);
-    });
-} else {
-    setTimeout(setupFilmDiziGecisi, 500);
-}
+    async function loadScifiTV() {
+        const res = await fetch(`${API_URL}/tv/category/10765`);
+        const data = await res.json();
+        const container = document.getElementById('scifiTV');
+        if (!container) return;
+        container.innerHTML = '';
+        data.slice(0, 10).forEach(s => {
+            const img = s.poster_path ? `https://image.tmdb.org/t/p/w200${s.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
+            container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
+        });
+    }
 </script>
 </body>
 </html>
