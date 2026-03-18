@@ -576,6 +576,89 @@ body {
     cursor: pointer;
     text-decoration: underline;
 }
+
+/* ARKADAŞ EKLEME BÖLÜMÜ - GÜZELLEŞTİRİLMİŞ */
+.add-friend-section {
+    padding: 20px;
+    background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+    border-bottom: 1px solid #333;
+    margin-bottom: 10px;
+}
+
+.add-friend-title {
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: #e50914;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.add-friend-title::before {
+    content: "👥";
+    font-size: 18px;
+}
+
+.add-friend-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.add-friend-input input {
+    flex: 1;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid #333;
+    background-color: #252525;
+    color: #fff;
+    font-size: 15px;
+    transition: all 0.3s;
+}
+
+.add-friend-input input:focus {
+    border-color: #e50914;
+    background-color: #2a2a2a;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.3);
+}
+
+.add-friend-input input::placeholder {
+    color: #666;
+    font-style: italic;
+}
+
+.add-friend-btn {
+    padding: 0 25px;
+    background: linear-gradient(145deg, #e50914, #b20710);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px rgba(229, 9, 20, 0.3);
+}
+
+.add-friend-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(229, 9, 20, 0.4);
+}
+
+.add-friend-btn:active {
+    transform: translateY(0);
+}
+
+/* Kullanıcı listesi başlığı */
+.list-title {
+    font-size: 15px;
+    color: #aaa;
+    margin: 15px 0 10px 5px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
     </style>
 </head>
 <body>
@@ -698,32 +781,29 @@ body {
         <div class="chat-tab" id="friendsTab">🤝 Arkadaşlarım</div>
     </div>
 
-    <!-- TÜM KULLANICILAR İÇERİĞİ -->
+    <!-- TÜM KULLANICILAR İÇERİĞİ (Arkadaş ekleme burada) -->
     <div class="chat-content active" id="allUsersContent">
+        <!-- Arkadaş ekleme bölümü - EN ÜSTTE -->
+        <div class="add-friend-section">
+            <div class="add-friend-title">🔍 Kullanıcı Ara</div>
+            <div class="add-friend-input">
+                <input type="email" id="friendEmail" placeholder="E-posta ile ara...">
+                <button class="add-friend-btn" id="addFriendBtn">Ekle</button>
+            </div>
+        </div>
+        
+        <!-- Kullanıcı listesi -->
         <div class="users-list" id="usersList">
             <div class="list-title">📋 Kayıtlı kullanıcılar</div>
             <!-- Kullanıcılar buraya listelenecek -->
         </div>
     </div>
 
-    <!-- ARKADAŞLAR İÇERİĞİ -->
+    <!-- ARKADAŞLAR İÇERİĞİ (Sadece arkadaş listesi) -->
     <div class="chat-content" id="friendsContent">
-        <!-- Arkadaş listesi -->
         <div class="friends-list" id="friendsList">
             <div class="list-title">🤝 Arkadaşların</div>
             <!-- Arkadaşlar buraya listelenecek -->
-        </div>
-        
-        <!-- Arkadaş ekleme bölümü - EN ALTA KOYALIM -->
-        <div class="add-friend-section">
-            <div class="add-friend-title">➕ Arkadaş Ekle</div>
-            <div class="add-friend-input">
-                <input type="email" id="friendEmail" placeholder="E-posta ile ara...">
-                <button class="add-friend-btn" id="addFriendBtn">Ekle</button>
-            </div>
-            <div class="friend-suggest">
-                Örnek: <span id="suggestFriend1">sabuncular61@gmail.com</span>
-            </div>
         </div>
     </div>
 </div>
