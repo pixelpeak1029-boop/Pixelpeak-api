@@ -617,48 +617,109 @@
             </div>
         </div>
 
-        <!-- İÇERİK (Filmler/Diziler) -->
-        <div class="content-section" id="contentArea">
-            <!-- İÇERİK (Filmler/Diziler) -->
+        <!-- İÇERİK ALANI -->
 <div class="content-section" id="contentArea">
     
-    <!-- FİLMLER -->
+    <!-- 1. POPÜLER FİLMLER (SADECE FİLM) -->
     <div class="filmler-content">
-        <div class="section-title"><span>🍿</span> Popüler Filmler</div>
-        <div class="horizontal-scroll" id="popularMovies"></div>
+        <div class="section-title">
+            <span>🍿</span> Popüler Filmler
+        </div>
+        <div class="horizontal-scroll" id="popularMovies">
+            <!-- Burası JavaScript ile doldurulacak - SADECE FİLMLER -->
+        </div>
     </div>
 
-    <!-- KATEGORİLER - BURAYA EKLE -->
-    <div id="kategoriAlanı"></div>
+    <!-- 2. FİLM KATEGORİLERİ -->
+    <div class="content-row">
+        <div class="row-header">
+            <h3>🎬 Film Kategorileri</h3>
+            <a href="#" onclick="alert('Yakında!')">Tümü ›</a>
+        </div>
+        <div class="horizontal-scroll" id="movieCategories">
+            <!-- KATEGORİ KUTULARI -->
+            <div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=28&type=movie&name=Aksiyon'">
+                <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
+                    Aksiyon
+                </div>
+            </div>
+            <div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=35&type=movie&name=Komedi'">
+                <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
+                    Komedi
+                </div>
+            </div>
+            <div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=18&type=movie&name=Dram'">
+                <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
+                    Dram
+                </div>
+            </div>
+            <div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=10749&type=movie&name=Romantik'">
+                <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
+                    Romantik
+                </div>
+            </div>
+            <div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=878&type=movie&name=Bilim+Kurgu'">
+                <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
+                    Bilim Kurgu
+                </div>
+            </div>
+            <div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=27&type=movie&name=Korku'">
+                <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
+                    Korku
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <script>
-    // SADECE BUNU EKLE, GERİSİNE KARIŞMA!
-    async function kategorileriGoster() {
-        try {
-            const cevap = await fetch('https://pixelpeak-api.onrender.com/api/genres/movie');
-            const kategoriler = await cevap.json();
-            
-            let html = '<div class="content-row"><div class="row-header"><h3>🎬 Film Kategorileri</h3></div><div class="horizontal-scroll">';
-            
-            kategoriler.slice(0, 10).forEach(k => {
-                html += `<div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=${k.id}&type=movie&name=${k.name}'">
-                    <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">${k.name}</div>
-                </div>`;
-            });
-            
-            html += '</div></div>';
-            document.getElementById('kategoriAlanı').innerHTML = html;
-        } catch (error) {
-            console.error('Kategori hatası:', error);
-        }
-    }
-    kategorileriGoster();
-    </script>
+    <!-- 3. DİZİ KATEGORİLERİ -->
+    <div class="content-row">
+        <div class="row-header">
+            <h3>📺 Dizi Kategorileri</h3>
+            <a href="#" onclick="alert('Yakında!')">Tümü ›</a>
+        </div>
+        <div class="horizontal-scroll" id="tvCategories">
+            <!-- KATEGORİ KUTULARI -->
+            <div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=10759&type=tv&name=Aksiyon'">
+                <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
+                    Aksiyon
+                </div>
+            </div>
+            <div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=35&type=tv&name=Komedi'">
+                <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
+                    Komedi
+                </div>
+            </div>
+            <div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=18&type=tv&name=Dram'">
+                <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
+                    Dram
+                </div>
+            </div>
+            <div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=9648&type=tv&name=Gizem'">
+                <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
+                    Gizem
+                </div>
+            </div>
+            <div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=10765&type=tv&name=Bilim+Kurgu'">
+                <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
+                    Bilim Kurgu
+                </div>
+            </div>
+            <div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=10764&type=tv&name=Reality'">
+                <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
+                    Reality
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- DİZİLER -->
+    <!-- 4. POPÜLER DİZİLER (SADECE DİZİ) -->
     <div class="diziler-content">
-        <div class="section-title"><span>📺</span> Popüler Diziler</div>
-        <div class="horizontal-scroll" id="popularTVShows"></div>
+        <div class="section-title">
+            <span>📺</span> Popüler Diziler
+        </div>
+        <div class="horizontal-scroll" id="popularTVShows">
+            <!-- Burası JavaScript ile doldurulacak - SADECE DİZİLER -->
+        </div>
     </div>
 
 </div>
