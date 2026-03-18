@@ -1134,21 +1134,49 @@ body {
     }
 </script>
 <script>
-    // ===== BASİT TEST =====
+    // ===== ACİL ÇÖZÜM - BUTONLARI ZORLA ÇALIŞTIR =====
     setTimeout(function() {
-        // Film butonu var mı kontrol et
+        console.log('🔄 Butonlar zorla bağlanıyor...');
+        
+        // Film butonu
         var filmBtn = document.getElementById('filmBtn');
         if (filmBtn) {
-            alert('✅ Film butonu bulundu! Sayfa yüklendi.');
-            
-            // Geçici olarak butona tıklanınca alert versin
-            filmBtn.onclick = function() {
-                alert('🎬 Film butonuna tıklandı!');
+            filmBtn.onclick = function(e) {
+                e.preventDefault();
+                document.querySelector('.filmler-content').style.display = 'block';
+                document.querySelector('.diziler-content').style.display = 'none';
+                filmBtn.classList.add('active');
+                document.getElementById('diziBtn').classList.remove('active');
+                alert('🎬 Filmler gösteriliyor');
             };
-        } else {
-            alert('❌ Film butonu bulunamadı!');
         }
-    }, 2000);
+        
+        // Dizi butonu
+        var diziBtn = document.getElementById('diziBtn');
+        if (diziBtn) {
+            diziBtn.onclick = function(e) {
+                e.preventDefault();
+                document.querySelector('.filmler-content').style.display = 'none';
+                document.querySelector('.diziler-content').style.display = 'block';
+                diziBtn.classList.add('active');
+                document.getElementById('filmBtn').classList.remove('active');
+                alert('📺 Diziler gösteriliyor');
+            };
+        }
+        
+        // Chat butonu
+        var chatBtn = document.getElementById('chatBtn');
+        if (chatBtn) {
+            chatBtn.onclick = function(e) {
+                e.preventDefault();
+                document.getElementById('chatPanel').classList.add('open');
+                document.getElementById('overlay').classList.add('show');
+                alert('💬 Chat açılıyor');
+            };
+        }
+        
+        alert('✅ Butonlar zorla bağlandı! Şimdi dene.');
+    }, 1000);
 </script>
 </body>
 </html>
