@@ -988,55 +988,51 @@ body {
             document.getElementById('messageScreen').classList.remove('active');
         });
 
-        // ===== FİLM/DİZİ GEÇİŞİ (ACİL DÜZELTME) =====
+        // ===== FİLM/DİZİ GEÇİŞİ (BASİT VE ÇALIŞAN) =====
 function setupFilmDiziGecisi() {
     console.log('Film/Dizi geçişi kuruluyor...');
+    
+    // Elementleri seç
     const filmBtn = document.getElementById('filmBtn');
     const diziBtn = document.getElementById('diziBtn');
+    
+    // İçerikleri seç
     const filmIcerik = document.querySelector('.filmler-content');
     const diziIcerik = document.querySelector('.diziler-content');
     
-    if (filmBtn && diziBtn) {
-        console.log('Butonlar bulundu, eventler ekleniyor');
-        
-        // Önce tüm event listener'ları temizle (clone ile)
-        const yeniFilmBtn = filmBtn.cloneNode(true);
-        const yeniDiziBtn = diziBtn.cloneNode(true);
-        filmBtn.parentNode.replaceChild(yeniFilmBtn, filmBtn);
-        diziBtn.parentNode.replaceChild(yeniDiziBtn, diziBtn);
-        
-        // Yeni butonları seç
-        const yeniFilm = document.getElementById('filmBtn');
-        const yeniDizi = document.getElementById('diziBtn');
-        
-        // Eventleri ekle
-        yeniFilm.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('Film butonu tıklandı');
-            yeniFilm.classList.add('active');
-            yeniDizi.classList.remove('active');
-            if (filmIcerik) filmIcerik.style.display = 'block';
-            if (diziIcerik) diziIcerik.style.display = 'none';
-        });
-
-        yeniDizi.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('Dizi butonu tıklandı');
-            yeniDizi.classList.add('active');
-            yeniFilm.classList.remove('active');
-            if (filmIcerik) filmIcerik.style.display = 'none';
-            if (diziIcerik) diziIcerik.style.display = 'block';
-        });
-
-        // Varsayılan
-        if (filmIcerik) filmIcerik.style.display = 'block';
-        if (diziIcerik) diziIcerik.style.display = 'none';
-        
-        console.log('Film/Dizi geçişi kuruldu');
-    } else {
-        console.log('Butonlar bulunamadı, tekrar deneniyor...');
+    if (!filmBtn || !diziBtn || !filmIcerik || !diziIcerik) {
+        console.log('Elementler bulunamadı, tekrar deneniyor...');
         setTimeout(setupFilmDiziGecisi, 500);
+        return;
     }
+    
+    console.log('Elementler bulundu, eventler ekleniyor');
+    
+    // Film butonu event'i
+    filmBtn.onclick = function(e) {
+        e.preventDefault();
+        console.log('Film butonu tıklandı');
+        filmBtn.classList.add('active');
+        diziBtn.classList.remove('active');
+        filmIcerik.style.display = 'block';
+        diziIcerik.style.display = 'none';
+    };
+    
+    // Dizi butonu event'i
+    diziBtn.onclick = function(e) {
+        e.preventDefault();
+        console.log('Dizi butonu tıklandı');
+        diziBtn.classList.add('active');
+        filmBtn.classList.remove('active');
+        filmIcerik.style.display = 'none';
+        diziIcerik.style.display = 'block';
+    };
+    
+    // Varsayılan
+    filmIcerik.style.display = 'block';
+    diziIcerik.style.display = 'none';
+    
+    console.log('Film/Dizi geçişi kuruldu');
 }
         // ===== ARKADAŞ EKLEME BUTONU =====
         document.getElementById('addFriendBtn').addEventListener('click', function() {
@@ -1149,10 +1145,10 @@ function setupFilmDiziGecisi() {
         // Sayfa yüklendiğinde Film/Dizi geçişini kur
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(setupFilmDiziGecisi, 300);
+        setTimeout(setupFilmDiziGecisi, 500);
     });
 } else {
-    setTimeout(setupFilmDiziGecisi, 300);
+    setTimeout(setupFilmDiziGecisi, 500);
 }
 </script>
 </body>
