@@ -963,79 +963,6 @@ body {
         displayFriends();
     });
 
-    // ===== BUTONLAR - EN TEMEL HALİYLE =====
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM yüklendi, butonlar bağlanıyor...');
-        
-        // CHAT BUTONU
-        const chatBtn = document.getElementById('chatBtn');
-        const chatPanel = document.getElementById('chatPanel');
-        const overlay = document.getElementById('overlay');
-        
-        if (chatBtn && chatPanel && overlay) {
-            chatBtn.onclick = function(e) {
-                e.preventDefault();
-                chatPanel.classList.add('open');
-                overlay.classList.add('show');
-                console.log('Chat açıldı');
-            };
-        }
-        
-        // CHAT KAPATMA
-        const closeChat = document.getElementById('closeChat');
-        if (closeChat && chatPanel && overlay) {
-            closeChat.onclick = function(e) {
-                e.preventDefault();
-                chatPanel.classList.remove('open');
-                overlay.classList.remove('show');
-                console.log('Chat kapandı');
-            };
-        }
-        
-        // OVERLAY
-        if (overlay && chatPanel) {
-            overlay.onclick = function() {
-                chatPanel.classList.remove('open');
-                overlay.classList.remove('show');
-                console.log('Overlay ile kapandı');
-            };
-        }
-        
-        // FİLM BUTONU
-        const filmBtn = document.getElementById('filmBtn');
-        const diziBtn = document.getElementById('diziBtn');
-        const filmIcerik = document.querySelector('.filmler-content');
-        const diziIcerik = document.querySelector('.diziler-content');
-        
-        if (filmBtn && diziBtn && filmIcerik && diziIcerik) {
-            filmBtn.onclick = function(e) {
-                e.preventDefault();
-                filmBtn.classList.add('active');
-                diziBtn.classList.remove('active');
-                filmIcerik.style.display = 'block';
-                diziIcerik.style.display = 'none';
-                console.log('Filmler gösteriliyor');
-            };
-            
-            diziBtn.onclick = function(e) {
-                e.preventDefault();
-                diziBtn.classList.add('active');
-                filmBtn.classList.remove('active');
-                filmIcerik.style.display = 'none';
-                diziIcerik.style.display = 'block';
-                console.log('Diziler gösteriliyor');
-            };
-            
-            // Başlangıç
-            filmBtn.classList.add('active');
-            diziBtn.classList.remove('active');
-            filmIcerik.style.display = 'block';
-            diziIcerik.style.display = 'none';
-        }
-        
-        console.log('Tüm butonlar bağlandı!');
-    });
-
     // ===== FİLM YÜKLEME FONKSİYONLARI =====
     async function loadPopularMovies() {
         const res = await fetch(`${API_URL}/movies/popular`);
@@ -1132,89 +1059,72 @@ body {
             container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
         });
     }
-</script>
-<script>
-    // ===== ACİL ÇÖZÜM - BUTONLARI ZORLA ÇALIŞTIR =====
-    setTimeout(function() {
-        console.log('🔄 Butonlar zorla bağlanıyor...');
-        
-        // Film butonu
-        var filmBtn = document.getElementById('filmBtn');
-        if (filmBtn) {
-            filmBtn.onclick = function(e) {
-                e.preventDefault();
-                document.querySelector('.filmler-content').style.display = 'block';
-                document.querySelector('.diziler-content').style.display = 'none';
-                filmBtn.classList.add('active');
-                document.getElementById('diziBtn').classList.remove('active');
-                alert('🎬 Filmler gösteriliyor');
-            };
-        }
-        
-        // Dizi butonu
-        var diziBtn = document.getElementById('diziBtn');
-        if (diziBtn) {
-            diziBtn.onclick = function(e) {
-                e.preventDefault();
-                document.querySelector('.filmler-content').style.display = 'none';
-                document.querySelector('.diziler-content').style.display = 'block';
-                diziBtn.classList.add('active');
-                document.getElementById('filmBtn').classList.remove('active');
-                alert('📺 Diziler gösteriliyor');
-            };
-        }
-        
-        // Chat butonu
-        var chatBtn = document.getElementById('chatBtn');
-        if (chatBtn) {
-            chatBtn.onclick = function(e) {
-                e.preventDefault();
-                document.getElementById('chatPanel').classList.add('open');
-                document.getElementById('overlay').classList.add('show');
-                alert('💬 Chat açılıyor');
-            };
-        }
-        
-        alert('✅ Butonlar zorla bağlandı! Şimdi dene.');
-    }, 1000);
 
-    <script>
-    // ===== KESİN ÇÖZÜM - BUTONLARI YENİDEN BAĞLA =====
+    // ===== BUTONLAR - SON ÇALIŞAN VERSİYON =====
     window.onload = function() {
-        alert('Sayfa tamamen yüklendi! Butonlar bağlanıyor...');
         
         // FİLM BUTONU
         var filmBtn = document.getElementById('filmBtn');
-        if (filmBtn) {
-            filmBtn.onclick = function() {
-                document.querySelector('.filmler-content').style.display = 'block';
-                document.querySelector('.diziler-content').style.display = 'none';
-                this.classList.add('active');
-                document.getElementById('diziBtn').classList.remove('active');
-                alert('Filmler gösteriliyor');
-            };
-        }
-        
-        // DİZİ BUTONU
         var diziBtn = document.getElementById('diziBtn');
-        if (diziBtn) {
-            diziBtn.onclick = function() {
-                document.querySelector('.filmler-content').style.display = 'none';
-                document.querySelector('.diziler-content').style.display = 'block';
-                this.classList.add('active');
-                document.getElementById('filmBtn').classList.remove('active');
-                alert('Diziler gösteriliyor');
+        var chatBtn = document.getElementById('chatBtn');
+        var chatPanel = document.getElementById('chatPanel');
+        var overlay = document.getElementById('overlay');
+        var closeChat = document.getElementById('closeChat');
+        var filmIcerik = document.querySelector('.filmler-content');
+        var diziIcerik = document.querySelector('.diziler-content');
+        
+        if (filmBtn && diziBtn && filmIcerik && diziIcerik) {
+            filmBtn.onclick = function(e) {
+                e.preventDefault();
+                filmIcerik.style.display = 'block';
+                diziIcerik.style.display = 'none';
+                filmBtn.classList.add('active');
+                diziBtn.classList.remove('active');
+            };
+            
+            diziBtn.onclick = function(e) {
+                e.preventDefault();
+                filmIcerik.style.display = 'none';
+                diziIcerik.style.display = 'block';
+                diziBtn.classList.add('active');
+                filmBtn.classList.remove('active');
             };
         }
         
         // CHAT BUTONU
-        var chatBtn = document.getElementById('chatBtn');
-        if (chatBtn) {
-            chatBtn.onclick = function() {
-                document.getElementById('chatPanel').classList.add('open');
-                document.getElementById('overlay').classList.add('show');
-                alert('Chat açılıyor');
+        if (chatBtn && chatPanel && overlay) {
+            chatBtn.onclick = function(e) {
+                e.preventDefault();
+                chatPanel.classList.add('open');
+                overlay.classList.add('show');
             };
+        }
+        
+        // CHAT KAPATMA
+        if (closeChat && chatPanel && overlay) {
+            closeChat.onclick = function(e) {
+                e.preventDefault();
+                chatPanel.classList.remove('open');
+                overlay.classList.remove('show');
+            };
+        }
+        
+        // OVERLAY (dışarı tıklayınca kapat)
+        if (overlay && chatPanel) {
+            overlay.onclick = function() {
+                chatPanel.classList.remove('open');
+                overlay.classList.remove('show');
+            };
+        }
+        
+        // Başlangıç durumu
+        if (filmIcerik && diziIcerik) {
+            filmIcerik.style.display = 'block';
+            diziIcerik.style.display = 'none';
+            if (filmBtn && diziBtn) {
+                filmBtn.classList.add('active');
+                diziBtn.classList.remove('active');
+            }
         }
     };
 </script>
