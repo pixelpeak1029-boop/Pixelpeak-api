@@ -988,29 +988,7 @@ body {
             document.getElementById('messageScreen').classList.remove('active');
         });
 
-        // ===== FİLM/DİZİ GEÇİŞİ (DÜZELTİLDİ) =====
-        const filmBtn = document.getElementById('filmBtn');
-        const diziBtn = document.getElementById('diziBtn');
-        const filmIcerik = document.querySelector('.filmler-content');
-        const diziIcerik = document.querySelector('.diziler-content');
-
-        filmBtn.addEventListener('click', function() {
-            filmBtn.classList.add('active');
-            diziBtn.classList.remove('active');
-            filmIcerik.style.display = 'block';
-            diziIcerik.style.display = 'none';
-        });
-
-        diziBtn.addEventListener('click', function() {
-            diziBtn.classList.add('active');
-            filmBtn.classList.remove('active');
-            filmIcerik.style.display = 'none';
-            diziIcerik.style.display = 'block';
-        });
-
-        // Varsayılan olarak filmler gösterilsin
-        filmIcerik.style.display = 'block';
-        diziIcerik.style.display = 'none';
+        
 
         // ===== ARKADAŞ EKLEME BUTONU =====
         document.getElementById('addFriendBtn').addEventListener('click', function() {
