@@ -1127,5 +1127,22 @@ body {
         });
     }
 </script>
+<script>
+    // ===== BASİT TEST =====
+    setTimeout(function() {
+        // Film butonu var mı kontrol et
+        var filmBtn = document.getElementById('filmBtn');
+        if (filmBtn) {
+            alert('✅ Film butonu bulundu! Sayfa yüklendi.');
+            
+            // Geçici olarak butona tıklanınca alert versin
+            filmBtn.onclick = function() {
+                alert('🎬 Film butonuna tıklandı!');
+            };
+        } else {
+            alert('❌ Film butonu bulunamadı!');
+        }
+    }, 2000);
+</script>
 </body>
 </html>
