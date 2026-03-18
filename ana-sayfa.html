@@ -1177,6 +1177,47 @@ body {
         
         alert('✅ Butonlar zorla bağlandı! Şimdi dene.');
     }, 1000);
+
+    <script>
+    // ===== KESİN ÇÖZÜM - BUTONLARI YENİDEN BAĞLA =====
+    window.onload = function() {
+        alert('Sayfa tamamen yüklendi! Butonlar bağlanıyor...');
+        
+        // FİLM BUTONU
+        var filmBtn = document.getElementById('filmBtn');
+        if (filmBtn) {
+            filmBtn.onclick = function() {
+                document.querySelector('.filmler-content').style.display = 'block';
+                document.querySelector('.diziler-content').style.display = 'none';
+                this.classList.add('active');
+                document.getElementById('diziBtn').classList.remove('active');
+                alert('Filmler gösteriliyor');
+            };
+        }
+        
+        // DİZİ BUTONU
+        var diziBtn = document.getElementById('diziBtn');
+        if (diziBtn) {
+            diziBtn.onclick = function() {
+                document.querySelector('.filmler-content').style.display = 'none';
+                document.querySelector('.diziler-content').style.display = 'block';
+                this.classList.add('active');
+                document.getElementById('filmBtn').classList.remove('active');
+                alert('Diziler gösteriliyor');
+            };
+        }
+        
+        // CHAT BUTONU
+        var chatBtn = document.getElementById('chatBtn');
+        if (chatBtn) {
+            chatBtn.onclick = function() {
+                document.getElementById('chatPanel').classList.add('open');
+                document.getElementById('overlay').classList.add('show');
+                alert('Chat açılıyor');
+            };
+        }
+    };
+</script>
 </script>
 </body>
 </html>
