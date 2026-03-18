@@ -679,6 +679,7 @@ body {
         let friends = [];
         let currentChatFriend = null;
 
+        // ===== GİRİŞ YAPAN KULLANICIYI AL =====
         (async function init() {
             const storedUser = localStorage.getItem('pixelpeak_user');
             const token = localStorage.getItem('pixelpeak_token');
@@ -691,19 +692,14 @@ body {
                 document.getElementById('profileBtn').textContent = currentUser.avatar || '👤';
                 
                 await loadAllUsers();
-                
-                // Filmleri yükle
                 await loadPopularMovies();
                 await loadActionMovies();
                 await loadComedyMovies();
                 await loadScifiMovies();
-                
-                // Dizileri yükle
                 await loadPopularTVShows();
                 await loadActionTV();
                 await loadComedyTV();
                 await loadScifiTV();
-                
                 loadFriends();
                 
                 setInterval(loadAllUsers, 10000);
@@ -712,6 +708,7 @@ body {
             }
         })();
 
+        // ===== TÜM KULLANICILARI GETİR =====
         async function loadAllUsers() {
             try {
                 const response = await fetch(`${API_URL}/all-users`);
@@ -729,6 +726,7 @@ body {
             }
         }
 
+        // ===== ARKADAŞLARI YÜKLE =====
         function loadFriends() {
             try {
                 const savedFriends = localStorage.getItem(`friends_${currentUser.email}`);
@@ -748,6 +746,7 @@ body {
             localStorage.setItem(`friends_${currentUser.email}`, JSON.stringify(friends));
         }
 
+        // ===== KULLANICILARI GÖSTER =====
         function displayUsers(users) {
             const usersList = document.getElementById('usersList');
             if (users.length === 0) {
@@ -755,12 +754,10 @@ body {
                 return;
             }
             let html = '<div class="list-title">📋 Kayıtlı kullanıcılar</div>';
-            const limitedUsers = users.slice(0, 30);
-            limitedUsers.forEach(user => {
+            users.slice(0, 30).forEach(user => {
                 const isFriend = friends.some(f => f.email === user.email);
                 html += `<div class="user-item" data-email="${user.email}" data-name="${user.name}"><div class="user-avatar-small">${user.avatar}</div><div class="user-info-small"><div class="user-name-small">${user.name}</div><div class="user-email-small">${user.email}</div></div>${!isFriend ? '<div class="add-badge" onclick="event.stopPropagation(); window.addFriend(\'' + user.email + '\')">➕ Ekle</div>' : '<div class="add-badge friend" onclick="event.stopPropagation(); window.openMessageScreen(\'' + user.name + '\', \'' + user.email + '\')">💬 Mesaj</div>'}</div>`;
             });
-            if (users.length > 30) html += `<div style="padding:15px; text-align:center; color:#e50914;">+${users.length - 30} kullanıcı daha var...</div>`;
             usersList.innerHTML = html;
             document.querySelectorAll('#allUsersContent .user-item').forEach(item => {
                 item.addEventListener('click', function(e) {
@@ -770,6 +767,7 @@ body {
             });
         }
 
+        // ===== ARKADAŞLARI GÖSTER =====
         function displayFriends() {
             const friendsList = document.getElementById('friendsList');
             if (friends.length === 0) {
@@ -789,6 +787,7 @@ body {
             });
         }
 
+        // ===== ARKADAŞ EKLE =====
         window.addFriend = function(email) {
             if (!email || email === currentUser.email) { alert('Kendini ekleyemezsin!'); return; }
             const user = allUsers.find(u => u.email === email);
@@ -802,6 +801,7 @@ body {
             alert('✅ Arkadaş eklendi!');
         };
 
+        // ===== MESAJLAŞMA EKRANINI AÇ =====
         window.openMessageScreen = function(name, email) {
             currentChatFriend = { name, email };
             document.getElementById('messageFriendName').textContent = name;
@@ -811,6 +811,7 @@ body {
             loadMessages(email);
         };
 
+        // ===== MESAJLARI YÜKLE =====
         async function loadMessages(friendEmail) {
             if (!friendEmail) return;
             try {
@@ -839,6 +840,7 @@ body {
             }
         }
 
+        // ===== MESAJ GÖNDER =====
         document.getElementById('sendMessageBtn').addEventListener('click', async function() {
             const input = document.getElementById('messageInput');
             const text = input.value.trim();
@@ -861,6 +863,7 @@ body {
             }
         });
 
+        // ===== MESAJ KONTROL =====
         setInterval(async () => {
             if (currentChatFriend) await loadMessages(currentChatFriend.email);
         }, 2000);
@@ -875,6 +878,7 @@ body {
             currentChatFriend = null;
         });
 
+        // ===== SEKMELER =====
         document.getElementById('allUsersTab').addEventListener('click', function() {
             document.getElementById('allUsersTab').classList.add('active');
             document.getElementById('friendsTab').classList.remove('active');
@@ -890,6 +894,7 @@ body {
             displayFriends();
         });
 
+        // ===== CHAT PANELİ =====
         const chatBtn = document.getElementById('chatBtn');
         const chatPanel = document.getElementById('chatPanel');
         const closeChat = document.getElementById('closeChat');
@@ -912,25 +917,31 @@ body {
             document.getElementById('messageScreen').classList.remove('active');
         });
 
+        // ===== FİLM/DİZİ GEÇİŞİ (DÜZELTİLDİ) =====
         const filmBtn = document.getElementById('filmBtn');
         const diziBtn = document.getElementById('diziBtn');
-        const container = document.getElementById('appContainer');
+        const filmIcerik = document.querySelector('.filmler-content');
+        const diziIcerik = document.querySelector('.diziler-content');
 
         filmBtn.addEventListener('click', function() {
-            container.classList.remove('show-diziler');
-            container.classList.add('show-films');
             filmBtn.classList.add('active');
             diziBtn.classList.remove('active');
+            filmIcerik.style.display = 'block';
+            diziIcerik.style.display = 'none';
         });
 
         diziBtn.addEventListener('click', function() {
-            container.classList.remove('show-films');
-            container.classList.add('show-diziler');
             diziBtn.classList.add('active');
             filmBtn.classList.remove('active');
+            filmIcerik.style.display = 'none';
+            diziIcerik.style.display = 'block';
         });
-        container.classList.add('show-films');
 
+        // Varsayılan olarak filmler gösterilsin
+        filmIcerik.style.display = 'block';
+        diziIcerik.style.display = 'none';
+
+        // ===== ARKADAŞ EKLEME BUTONU =====
         document.getElementById('addFriendBtn').addEventListener('click', function() {
             const email = document.getElementById('friendEmail').value.trim();
             window.addFriend(email);
@@ -941,6 +952,7 @@ body {
             if (e.key === 'Enter') document.getElementById('addFriendBtn').click();
         });
 
+        // ===== FİLM YÜKLEME FONKSİYONLARI =====
         async function loadPopularMovies() {
             const res = await fetch(`${API_URL}/movies/popular`);
             const data = await res.json();
@@ -1036,26 +1048,6 @@ body {
                 container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
             });
         }
-
-// ===== FİLM/DİZİ GEÇİŞİ =====
-const filmBtn = document.getElementById('filmBtn');
-const diziBtn = document.getElementById('diziBtn');
-const filmIcerik = document.querySelector('.filmler-content');
-const diziIcerik = document.querySelector('.diziler-content');
-
-filmBtn.addEventListener('click', function() {
-    filmBtn.classList.add('active');
-    diziBtn.classList.remove('active');
-    filmIcerik.style.display = 'block';
-    diziIcerik.style.display = 'none';
-});
-
-diziBtn.addEventListener('click', function() {
-    diziBtn.classList.add('active');
-    filmBtn.classList.remove('active');
-    filmIcerik.style.display = 'none';
-    diziIcerik.style.display = 'block';
-});
-    </script>
+</script>
 </body>
 </html>
