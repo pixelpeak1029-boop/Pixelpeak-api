@@ -546,12 +546,12 @@
         }
 
         .message-input-area {
-    padding: 15px 20px;
-    background-color: #0f0f0f;
-    border-top: 1px solid #333;
-    display: flex;
-    gap: 10px;
-}
+            padding: 15px 20px;
+            background-color: #0f0f0f;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 10px;
+        }
 
         .message-input-area input {
             flex: 1;
@@ -697,7 +697,6 @@
         </div>
     </div>
 </div>
-
         <!-- CHAT PANELİ -->
         <div class="chat-panel" id="chatPanel">
             <div class="chat-header">
@@ -1122,6 +1121,7 @@
                 container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
             });
         }
+
 // ===== FİLM/DİZİ GEÇİŞİ =====
 const filmBtn = document.getElementById('filmBtn');
 const diziBtn = document.getElementById('diziBtn');
