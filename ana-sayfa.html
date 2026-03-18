@@ -1124,37 +1124,15 @@ body {
             });
         }
 
-        // Sayfa yüklendiğinde Film/Dizi geçişini kur
-        document.addEventListener('DOMContentLoaded', function() {
-            setupFilmDiziGecisi();
-        });
-// HEMEN ÇALIŞTIR (bekleme yok)
-setTimeout(function() {
-    const filmBtn = document.getElementById('filmBtn');
-    const diziBtn = document.getElementById('diziBtn');
-    const filmIcerik = document.querySelector('.filmler-content');
-    const diziIcerik = document.querySelector('.diziler-content');
-    
-    if (filmBtn && diziBtn) {
-        filmBtn.addEventListener('click', function() {
-            filmBtn.classList.add('active');
-            diziBtn.classList.remove('active');
-            filmIcerik.style.display = 'block';
-            diziIcerik.style.display = 'none';
-        });
-
-        diziBtn.addEventListener('click', function() {
-            diziBtn.classList.add('active');
-            filmBtn.classList.remove('active');
-            filmIcerik.style.display = 'none';
-            diziIcerik.style.display = 'block';
-        });
-
-        // Varsayılan
-        filmIcerik.style.display = 'block';
-        diziIcerik.style.display = 'none';
-    }
-}, 500);
+        // Sayfa yüklendiğinde Film/Dizi geçişini kur - HEMEN ÇALIŞSIN
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        setupFilmDiziGecisi();
+    });
+} else {
+    // DOM zaten hazır, hemen çalıştır
+    setTimeout(setupFilmDiziGecisi, 100);
+}
 </script>
 </body>
 </html>
