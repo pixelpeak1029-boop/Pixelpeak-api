@@ -988,34 +988,56 @@ body {
             document.getElementById('messageScreen').classList.remove('active');
         });
 
-        // ===== FİLM/DİZİ GEÇİŞİ (TEK VE DOĞRU) =====
-        function setupFilmDiziGecisi() {
-            const filmBtn = document.getElementById('filmBtn');
-            const diziBtn = document.getElementById('diziBtn');
-            const filmIcerik = document.querySelector('.filmler-content');
-            const diziIcerik = document.querySelector('.diziler-content');
-            
-            if (filmBtn && diziBtn && filmIcerik && diziIcerik) {
-                filmBtn.addEventListener('click', function() {
-                    filmBtn.classList.add('active');
-                    diziBtn.classList.remove('active');
-                    filmIcerik.style.display = 'block';
-                    diziIcerik.style.display = 'none';
-                });
+        // ===== FİLM/DİZİ GEÇİŞİ (ACİL DÜZELTME) =====
+function setupFilmDiziGecisi() {
+    console.log('Film/Dizi geçişi kuruluyor...');
+    const filmBtn = document.getElementById('filmBtn');
+    const diziBtn = document.getElementById('diziBtn');
+    const filmIcerik = document.querySelector('.filmler-content');
+    const diziIcerik = document.querySelector('.diziler-content');
+    
+    if (filmBtn && diziBtn) {
+        console.log('Butonlar bulundu, eventler ekleniyor');
+        
+        // Önce tüm event listener'ları temizle (clone ile)
+        const yeniFilmBtn = filmBtn.cloneNode(true);
+        const yeniDiziBtn = diziBtn.cloneNode(true);
+        filmBtn.parentNode.replaceChild(yeniFilmBtn, filmBtn);
+        diziBtn.parentNode.replaceChild(yeniDiziBtn, diziBtn);
+        
+        // Yeni butonları seç
+        const yeniFilm = document.getElementById('filmBtn');
+        const yeniDizi = document.getElementById('diziBtn');
+        
+        // Eventleri ekle
+        yeniFilm.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Film butonu tıklandı');
+            yeniFilm.classList.add('active');
+            yeniDizi.classList.remove('active');
+            if (filmIcerik) filmIcerik.style.display = 'block';
+            if (diziIcerik) diziIcerik.style.display = 'none';
+        });
 
-                diziBtn.addEventListener('click', function() {
-                    diziBtn.classList.add('active');
-                    filmBtn.classList.remove('active');
-                    filmIcerik.style.display = 'none';
-                    diziIcerik.style.display = 'block';
-                });
+        yeniDizi.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Dizi butonu tıklandı');
+            yeniDizi.classList.add('active');
+            yeniFilm.classList.remove('active');
+            if (filmIcerik) filmIcerik.style.display = 'none';
+            if (diziIcerik) diziIcerik.style.display = 'block';
+        });
 
-                // Varsayılan olarak filmler gösterilsin
-                filmIcerik.style.display = 'block';
-                diziIcerik.style.display = 'none';
-            }
-        }
-
+        // Varsayılan
+        if (filmIcerik) filmIcerik.style.display = 'block';
+        if (diziIcerik) diziIcerik.style.display = 'none';
+        
+        console.log('Film/Dizi geçişi kuruldu');
+    } else {
+        console.log('Butonlar bulunamadı, tekrar deneniyor...');
+        setTimeout(setupFilmDiziGecisi, 500);
+    }
+}
         // ===== ARKADAŞ EKLEME BUTONU =====
         document.getElementById('addFriendBtn').addEventListener('click', function() {
             const email = document.getElementById('friendEmail').value.trim();
@@ -1124,14 +1146,13 @@ body {
             });
         }
 
-        // Sayfa yüklendiğinde Film/Dizi geçişini kur - HEMEN ÇALIŞSIN
+        // Sayfa yüklendiğinde Film/Dizi geçişini kur
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
-        setupFilmDiziGecisi();
+        setTimeout(setupFilmDiziGecisi, 300);
     });
 } else {
-    // DOM zaten hazır, hemen çalıştır
-    setTimeout(setupFilmDiziGecisi, 100);
+    setTimeout(setupFilmDiziGecisi, 300);
 }
 </script>
 </body>
