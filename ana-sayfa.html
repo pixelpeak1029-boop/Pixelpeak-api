@@ -987,47 +987,7 @@ body {
         if (e.key === 'Enter') document.getElementById('addFriendBtn').click();
     });
 
-    // ===== FİLM/DİZİ GEÇİŞİ - ÇOK BASİT VERSİYON =====
-    (function setupFilmDizi() {
-        console.log('Film/Dizi geçişi kuruluyor...');
-        const filmBtn = document.getElementById('filmBtn');
-        const diziBtn = document.getElementById('diziBtn');
-        const filmIcerik = document.querySelector('.filmler-content');
-        const diziIcerik = document.querySelector('.diziler-content');
-
-        if (!filmBtn || !diziBtn || !filmIcerik || !diziIcerik) {
-            console.log('Elementler bulunamadı, tekrar deneniyor...');
-            setTimeout(setupFilmDizi, 500);
-            return;
-        }
-
-        // Film butonuna tıklanınca
-        filmBtn.onclick = function(e) {
-            e.preventDefault();
-            filmBtn.classList.add('active');
-            diziBtn.classList.remove('active');
-            filmIcerik.style.display = 'block';
-            diziIcerik.style.display = 'none';
-            console.log('Filmler gösteriliyor');
-        };
-
-        // Dizi butonuna tıklanınca
-        diziBtn.onclick = function(e) {
-            e.preventDefault();
-            diziBtn.classList.add('active');
-            filmBtn.classList.remove('active');
-            filmIcerik.style.display = 'none';
-            diziIcerik.style.display = 'block';
-            console.log('Diziler gösteriliyor');
-        };
-
-        // Başlangıç durumu
-        filmIcerik.style.display = 'block';
-        diziIcerik.style.display = 'none';
-        filmBtn.classList.add('active');
-        diziBtn.classList.remove('active');
-        console.log('Film/Dizi geçişi hazır');
-    })();
+    
 
     // ===== FİLM YÜKLEME FONKSİYONLARI =====
     async function loadPopularMovies() {
@@ -1179,6 +1139,9 @@ body {
             }
         }, 1000);
     })();
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
