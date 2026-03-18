@@ -1028,6 +1028,51 @@ body {
         }
         
         console.log('Tüm butonlar bağlandı!');
+        
+        // 🔽 İŞTE TAM BURAYA EKLEYECEKSİN 🔽
+        setTimeout(function() {
+            console.log('🔄 Butonlar tekrar kontrol ediliyor...');
+            
+            // Chat butonunu tekrar dene
+            const chatBtn2 = document.getElementById('chatBtn');
+            const chatPanel2 = document.getElementById('chatPanel');
+            const overlay2 = document.getElementById('overlay');
+            
+            if (chatBtn2 && chatPanel2 && overlay2) {
+                chatBtn2.onclick = function(e) {
+                    e.preventDefault();
+                    chatPanel2.classList.add('open');
+                    overlay2.classList.add('show');
+                    console.log('✅ Chat butonu çalıştı');
+                };
+            }
+            
+            // Film/Dizi butonlarını tekrar dene
+            const filmBtn2 = document.getElementById('filmBtn');
+            const diziBtn2 = document.getElementById('diziBtn');
+            const filmIcerik2 = document.querySelector('.filmler-content');
+            const diziIcerik2 = document.querySelector('.diziler-content');
+            
+            if (filmBtn2 && diziBtn2 && filmIcerik2 && diziIcerik2) {
+                filmBtn2.onclick = function(e) {
+                    e.preventDefault();
+                    filmBtn2.classList.add('active');
+                    diziBtn2.classList.remove('active');
+                    filmIcerik2.style.display = 'block';
+                    diziIcerik2.style.display = 'none';
+                    console.log('✅ Film butonu çalıştı');
+                };
+                
+                diziBtn2.onclick = function(e) {
+                    e.preventDefault();
+                    diziBtn2.classList.add('active');
+                    filmBtn2.classList.remove('active');
+                    filmIcerik2.style.display = 'none';
+                    diziIcerik2.style.display = 'block';
+                    console.log('✅ Dizi butonu çalıştı');
+                };
+            }
+        }, 1500); // 1.5 saniye sonra tekrar dene
     });
 
     // ===== FİLM YÜKLEME FONKSİYONLARI =====
