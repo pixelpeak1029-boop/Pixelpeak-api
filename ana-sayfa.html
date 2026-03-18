@@ -1125,6 +1125,63 @@ body {
             container.innerHTML += `<div class="card" onclick="window.location.href='detay.html?id=${s.id}&type=tv'"><img src="${img}" alt="${s.name}"><div class="card-title">${s.name}</div><div class="card-meta"><span class="match">${Math.round(s.vote_average * 10)}%</span><span>${s.first_air_date ? s.first_air_date.substring(0,4) : '?'}</span></div></div>`;
         });
     }
+// ===== ACİL DÜZELTME - SADECE BUTONLAR İÇİN =====
+    (function fixButtonsNow() {
+        console.log('🔧 Butonlar acilen düzeltiliyor...');
+        
+        // Hemen dene
+        setTimeout(function() {
+            const filmBtn = document.getElementById('filmBtn');
+            const diziBtn = document.getElementById('diziBtn');
+            const filmIcerik = document.querySelector('.filmler-content');
+            const diziIcerik = document.querySelector('.diziler-content');
+            
+            if (filmBtn && diziBtn && filmIcerik && diziIcerik) {
+                console.log('✅ Butonlar bulundu, eventler ekleniyor');
+                
+                // Tüm event listenerları temizle
+                filmBtn.replaceWith(filmBtn.cloneNode(true));
+                diziBtn.replaceWith(diziBtn.cloneNode(true));
+                
+                // Yeni butonları tekrar seç
+                const yeniFilmBtn = document.getElementById('filmBtn');
+                const yeniDiziBtn = document.getElementById('diziBtn');
+                
+                // Eventleri ekle
+                yeniFilmBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🎬 Film butonu tıklandı');
+                    yeniFilmBtn.classList.add('active');
+                    yeniDiziBtn.classList.remove('active');
+                    filmIcerik.style.display = 'block';
+                    diziIcerik.style.display = 'none';
+                });
+                
+                yeniDiziBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('📺 Dizi butonu tıklandı');
+                    yeniDiziBtn.classList.add('active');
+                    yeniFilmBtn.classList.remove('active');
+                    filmIcerik.style.display = 'none';
+                    diziIcerik.style.display = 'block';
+                });
+                
+                // Başlangıç durumu
+                yeniFilmBtn.classList.add('active');
+                yeniDiziBtn.classList.remove('active');
+                filmIcerik.style.display = 'block';
+                diziIcerik.style.display = 'none';
+                
+                console.log('✅ Butonlar düzeltildi!');
+            } else {
+                console.log('❌ Butonlar bulunamadı, tekrar deneniyor...');
+                setTimeout(arguments.callee, 1000);
+            }
+        }, 1000);
+    })();
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
