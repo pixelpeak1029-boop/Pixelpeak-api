@@ -618,273 +618,79 @@
         </div>
 
         <!-- İÇERİK ALANI -->
-<div class="content-section" id="contentArea">
-    
-    <!-- 1. POPÜLER FİLMLER (SADECE FİLM) -->
-    <div class="filmler-content">
-        <div class="section-title">
-            <span>🍿</span> Popüler Filmler
-        </div>
-        <div class="horizontal-scroll" id="popularMovies">
-            <!-- Burası JavaScript ile doldurulacak - SADECE FİLMLER -->
-        </div>
-    </div>
+        <div class="content-section" id="contentArea">
+            
+            <!-- 1. POPÜLER FİLMLER -->
+            <div class="filmler-content">
+                <div class="section-title">
+                    <span>🍿</span> Popüler Filmler
+                </div>
+                <div class="horizontal-scroll" id="popularMovies"></div>
+            </div>
 
-    <!-- FİLM KATEGORİLERİ -->
-<div class="content-row">
-    <div class="row-header">
-        <h3>🎬 Film Kategorileri</h3>
-        <a href="#" onclick="alert('Tüm kategoriler yakında!')">Tümü ›</a>
-    </div>
-    <div class="horizontal-scroll">
-        <!-- Aksiyon -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=28&type=movie&name=Aksiyon'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Aksiyon
+            <!-- 2. AKSİYON FİLMLERİ -->
+            <div class="content-row">
+                <div class="row-header">
+                    <h3>🔥 Aksiyon Filmleri</h3>
+                    <a href="kategori-detay.html?id=28&type=movie&name=Aksiyon">Tümü ›</a>
+                </div>
+                <div class="horizontal-scroll" id="actionMovies"></div>
             </div>
-        </div>
-        <!-- Macera -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=12&type=movie&name=Macera'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Macera
-            </div>
-        </div>
-        <!-- Animasyon -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=16&type=movie&name=Animasyon'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Animasyon
-            </div>
-        </div>
-        <!-- Komedi -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=35&type=movie&name=Komedi'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Komedi
-            </div>
-        </div>
-        <!-- Suç -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=80&type=movie&name=Suç'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Suç
-            </div>
-        </div>
-        <!-- Belgesel -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=99&type=movie&name=Belgesel'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Belgesel
-            </div>
-        </div>
-        <!-- Dram -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=18&type=movie&name=Dram'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Dram
-            </div>
-        </div>
-        <!-- Aile -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=10751&type=movie&name=Aile'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Aile
-            </div>
-        </div>
-        <!-- Fantastik -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=14&type=movie&name=Fantastik'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Fantastik
-            </div>
-        </div>
-        <!-- Tarih -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=36&type=movie&name=Tarih'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Tarih
-            </div>
-        </div>
-        <!-- Korku -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=27&type=movie&name=Korku'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Korku
-            </div>
-        </div>
-        <!-- Müzik -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=10402&type=movie&name=Müzik'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Müzik
-            </div>
-        </div>
-        <!-- Gizem -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=9648&type=movie&name=Gizem'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Gizem
-            </div>
-        </div>
-        <!-- Romantik -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=10749&type=movie&name=Romantik'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Romantik
-            </div>
-        </div>
-        <!-- Bilim Kurgu -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=878&type=movie&name=Bilim+Kurgu'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Bilim Kurgu
-            </div>
-        </div>
-        <!-- Gerilim -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=53&type=movie&name=Gerilim'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Gerilim
-            </div>
-        </div>
-        <!-- Savaş -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=10752&type=movie&name=Savaş'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Savaş
-            </div>
-        </div>
-        <!-- Western -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=37&type=movie&name=Western'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Western
-            </div>
-        </div>
-    </div>
-</div>
-<!-- 2. AKSİYON FİLMLERİ -->
-<div class="content-row">
-    <div class="row-header">
-        <h3>🔥 Aksiyon Filmleri</h3>
-        <a href="kategori-detay.html?id=28&type=movie&name=Aksiyon">Tümü ›</a>
-    </div>
-    <div class="horizontal-scroll" id="actionMovies"></div>
-</div>
 
-<!-- 3. KOMEDİ FİLMLERİ -->
-<div class="content-row">
-    <div class="row-header">
-        <h3>😂 Komedi Filmleri</h3>
-        <a href="kategori-detay.html?id=35&type=movie&name=Komedi">Tümü ›</a>
-    </div>
-    <div class="horizontal-scroll" id="comedyMovies"></div>
-</div>
+            <!-- 3. KOMEDİ FİLMLERİ -->
+            <div class="content-row">
+                <div class="row-header">
+                    <h3>😂 Komedi Filmleri</h3>
+                    <a href="kategori-detay.html?id=35&type=movie&name=Komedi">Tümü ›</a>
+                </div>
+                <div class="horizontal-scroll" id="comedyMovies"></div>
+            </div>
 
-<!-- 4. BİLİM KURGU FİLMLERİ -->
-<div class="content-row">
-    <div class="row-header">
-        <h3>🤖 Bilim Kurgu Filmleri</h3>
-        <a href="kategori-detay.html?id=878&type=movie&name=Bilim+Kurgu">Tümü ›</a>
-    </div>
-    <div class="horizontal-scroll" id="scifiMovies"></div>
-</div>
+            <!-- 4. BİLİM KURGU FİLMLERİ -->
+            <div class="content-row">
+                <div class="row-header">
+                    <h3>🤖 Bilim Kurgu Filmleri</h3>
+                    <a href="kategori-detay.html?id=878&type=movie&name=Bilim+Kurgu">Tümü ›</a>
+                </div>
+                <div class="horizontal-scroll" id="scifiMovies"></div>
+            </div>
 
-<!-- DİZİ KATEGORİLERİ -->
-<div class="content-row">
-    <div class="row-header">
-        <h3>📺 Dizi Kategorileri</h3>
-        <a href="#" onclick="alert('Tüm kategoriler yakında!')">Tümü ›</a>
-    </div>
-    <div class="horizontal-scroll">
-        <!-- Aksiyon & Macera -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=10759&type=tv&name=Aksiyon+Macera'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Aksiyon
+            <!-- 5. POPÜLER DİZİLER -->
+            <div class="diziler-content">
+                <div class="section-title">
+                    <span>📺</span> Popüler Diziler
+                </div>
+                <div class="horizontal-scroll" id="popularTVShows"></div>
             </div>
-        </div>
-        <!-- Animasyon -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=16&type=tv&name=Animasyon'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Animasyon
-            </div>
-        </div>
-        <!-- Komedi -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=35&type=tv&name=Komedi'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Komedi
-            </div>
-        </div>
-        <!-- Suç -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=80&type=tv&name=Suç'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Suç
-            </div>
-        </div>
-        <!-- Belgesel -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=99&type=tv&name=Belgesel'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Belgesel
-            </div>
-        </div>
-        <!-- Dram -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=18&type=tv&name=Dram'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Dram
-            </div>
-        </div>
-        <!-- Aile -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=10751&type=tv&name=Aile'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Aile
-            </div>
-        </div>
-        <!-- Çocuk -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=10762&type=tv&name=Çocuk'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Çocuk
-            </div>
-        </div>
-        <!-- Gizem -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=9648&type=tv&name=Gizem'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Gizem
-            </div>
-        </div>
-        <!-- Haber -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=10763&type=tv&name=Haber'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Haber
-            </div>
-        </div>
-        <!-- Reality -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=10764&type=tv&name=Reality'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Reality
-            </div>
-        </div>
-        <!-- Bilim Kurgu -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=10765&type=tv&name=Bilim+Kurgu'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Bilim Kurgu
-            </div>
-        </div>
-        <!-- Pembe Dizi -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=10766&type=tv&name=Pembe+Dizi'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Pembe Dizi
-            </div>
-        </div>
-        <!-- Savaş -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=10768&type=tv&name=Savaş'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Savaş
-            </div>
-        </div>
-        <!-- Western -->
-        <div class="card" style="width:100px;" onclick="window.location.href='kategori-detay.html?id=37&type=tv&name=Western'">
-            <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">
-                Western
-            </div>
-        </div>
-    </div>
-</div>
 
-    <!-- 4. POPÜLER DİZİLER (SADECE DİZİ) -->
-    <div class="diziler-content">
-        <div class="section-title">
-            <span>📺</span> Popüler Diziler
-        </div>
-        <div class="horizontal-scroll" id="popularTVShows">
-            <!-- Burası JavaScript ile doldurulacak - SADECE DİZİLER -->
-        </div>
-    </div>
+            <!-- 6. AKSİYON DİZİLERİ -->
+            <div class="content-row">
+                <div class="row-header">
+                    <h3>🔥 Aksiyon Dizileri</h3>
+                    <a href="kategori-detay.html?id=10759&type=tv&name=Aksiyon">Tümü ›</a>
+                </div>
+                <div class="horizontal-scroll" id="actionTV"></div>
+            </div>
 
-</div>
+            <!-- 7. KOMEDİ DİZİLERİ -->
+            <div class="content-row">
+                <div class="row-header">
+                    <h3>😂 Komedi Dizileri</h3>
+                    <a href="kategori-detay.html?id=35&type=tv&name=Komedi">Tümü ›</a>
+                </div>
+                <div class="horizontal-scroll" id="comedyTV"></div>
+            </div>
+
+            <!-- 8. BİLİM KURGU DİZİLERİ -->
+            <div class="content-row">
+                <div class="row-header">
+                    <h3>🤖 Bilim Kurgu Dizileri</h3>
+                    <a href="kategori-detay.html?id=10765&type=tv&name=Bilim+Kurgu">Tümü ›</a>
+                </div>
+                <div class="horizontal-scroll" id="scifiTV"></div>
+            </div>
+
+        </div>
 
         <!-- CHAT PANELİ -->
         <div class="chat-panel" id="chatPanel">
@@ -966,7 +772,6 @@
         let friends = [];
         let currentChatFriend = null;
 
-        // ===== GİRİŞ YAPAN KULLANICIYI AL =====
         (async function init() {
             const storedUser = localStorage.getItem('pixelpeak_user');
             const token = localStorage.getItem('pixelpeak_token');
@@ -995,7 +800,6 @@
             }
         })();
 
-        // ===== TÜM KULLANICILARI GETİR =====
         async function loadAllUsers() {
             try {
                 const response = await fetch(`${API_URL}/all-users`);
@@ -1015,7 +819,6 @@
             }
         }
 
-        // ===== ARKADAŞLARI YÜKLE =====
         function loadFriends() {
             try {
                 const savedFriends = localStorage.getItem(`friends_${currentUser.email}`);
@@ -1035,7 +838,6 @@
             localStorage.setItem(`friends_${currentUser.email}`, JSON.stringify(friends));
         }
 
-        // ===== KULLANICILARI GÖSTER =====
         function displayUsers(users) {
             const usersList = document.getElementById('usersList');
             
@@ -1082,7 +884,6 @@
             });
         }
 
-        // ===== ARKADAŞLARI GÖSTER =====
         function displayFriends() {
             const friendsList = document.getElementById('friendsList');
             
@@ -1121,7 +922,6 @@
             });
         }
 
-        // ===== ARKADAŞ EKLE =====
         window.addFriend = function(email) {
             if (!email || email === currentUser.email) {
                 alert('Kendini ekleyemezsin!');
@@ -1152,7 +952,6 @@
             alert('✅ Arkadaş eklendi!');
         };
 
-        // ===== MESAJLAŞMA EKRANINI AÇ =====
         window.openMessageScreen = function(name, email) {
             currentChatFriend = { name, email };
             document.getElementById('messageFriendName').textContent = name;
@@ -1162,7 +961,6 @@
             loadMessages(email);
         };
 
-        // ===== MESAJLARI YÜKLE =====
         async function loadMessages(friendEmail) {
             if (!friendEmail) return;
             
@@ -1223,7 +1021,6 @@
             }
         }
 
-        // ===== MESAJ GÖNDER =====
         document.getElementById('sendMessageBtn').addEventListener('click', async function() {
             const input = document.getElementById('messageInput');
             const text = input.value.trim();
@@ -1258,28 +1055,24 @@
             }
         });
 
-        // ===== MESAJ KONTROL =====
         setInterval(async () => {
             if (currentChatFriend) {
                 await loadMessages(currentChatFriend.email);
             }
         }, 2000);
 
-        // Enter tuşu ile mesaj gönder
         document.getElementById('messageInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 document.getElementById('sendMessageBtn').click();
             }
         });
 
-        // ===== MESAJ EKRANINI KAPAT =====
         document.getElementById('closeMessageScreen').addEventListener('click', function() {
             document.getElementById('messageScreen').classList.remove('active');
             document.getElementById('overlay').classList.remove('show');
             currentChatFriend = null;
         });
 
-        // ===== SEKMELER =====
         document.getElementById('allUsersTab').addEventListener('click', function() {
             document.getElementById('allUsersTab').classList.add('active');
             document.getElementById('friendsTab').classList.remove('active');
@@ -1295,7 +1088,6 @@
             displayFriends();
         });
 
-        // ===== CHAT PANELİ =====
         const chatBtn = document.getElementById('chatBtn');
         const chatPanel = document.getElementById('chatPanel');
         const closeChat = document.getElementById('closeChat');
@@ -1318,7 +1110,6 @@
             document.getElementById('messageScreen').classList.remove('active');
         });
 
-        // ===== FİLM/DİZİ GEÇİŞİ =====
         const filmBtn = document.getElementById('filmBtn');
         const diziBtn = document.getElementById('diziBtn');
         const container = document.getElementById('appContainer');
@@ -1338,7 +1129,6 @@
         });
         container.classList.add('show-films');
 
-        // ===== ARKADAŞ EKLEME BUTONU =====
         document.getElementById('addFriendBtn').addEventListener('click', function() {
             const email = document.getElementById('friendEmail').value.trim();
             window.addFriend(email);
@@ -1351,33 +1141,19 @@
             }
         });
 
-        // ===== POPÜLER FİLMLERİ YÜKLE =====
         async function loadPopularMovies() {
             try {
                 const response = await fetch(`${API_URL}/movies/popular`);
                 const movies = await response.json();
-                
                 const container = document.getElementById('popularMovies');
                 if (!container) return;
-                
                 container.innerHTML = '';
-                
                 movies.slice(0, 10).forEach(movie => {
-                    const posterPath = movie.poster_path 
-                        ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                        : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                    
+                    const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => window.location.href = `detay.html?id=${movie.id}&type=movie`;
-                    card.innerHTML = `
-                        <img src="${posterPath}" alt="${movie.title}">
-                        <div class="card-title">${movie.title}</div>
-                        <div class="card-meta">
-                            <span class="match">${Math.round(movie.vote_average * 10)}%</span>
-                            <span>${movie.release_date ? movie.release_date.substring(0, 4) : '?'}</span>
-                        </div>
-                    `;
+                    card.innerHTML = `<img src="${posterPath}" alt="${movie.title}"><div class="card-title">${movie.title}</div><div class="card-meta"><span class="match">${Math.round(movie.vote_average * 10)}%</span><span>${movie.release_date ? movie.release_date.substring(0, 4) : '?'}</span></div>`;
                     container.appendChild(card);
                 });
             } catch (error) {
@@ -1385,33 +1161,19 @@
             }
         }
 
-        // ===== POPÜLER DİZİLERİ YÜKLE =====
         async function loadPopularTVShows() {
             try {
                 const response = await fetch(`${API_URL}/tv/popular`);
                 const shows = await response.json();
-                
                 const container = document.getElementById('popularTVShows');
                 if (!container) return;
-                
                 container.innerHTML = '';
-                
                 shows.slice(0, 10).forEach(show => {
-                    const posterPath = show.poster_path 
-                        ? `https://image.tmdb.org/t/p/w200${show.poster_path}`
-                        : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                    
+                    const posterPath = show.poster_path ? `https://image.tmdb.org/t/p/w200${show.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => window.location.href = `detay.html?id=${show.id}&type=tv`;
-                    card.innerHTML = `
-                        <img src="${posterPath}" alt="${show.name}">
-                        <div class="card-title">${show.name}</div>
-                        <div class="card-meta">
-                            <span class="match">${Math.round(show.vote_average * 10)}%</span>
-                            <span>${show.first_air_date ? show.first_air_date.substring(0, 4) : '?'}</span>
-                        </div>
-                    `;
+                    card.innerHTML = `<img src="${posterPath}" alt="${show.name}"><div class="card-title">${show.name}</div><div class="card-meta"><span class="match">${Math.round(show.vote_average * 10)}%</span><span>${show.first_air_date ? show.first_air_date.substring(0, 4) : '?'}</span></div>`;
                     container.appendChild(card);
                 });
             } catch (error) {
@@ -1419,33 +1181,19 @@
             }
         }
 
-        // ===== AKSİYON FİLMLERİ =====
         async function loadActionMovies() {
             try {
                 const response = await fetch(`${API_URL}/movies/category/28`);
                 const movies = await response.json();
-                
                 const container = document.getElementById('actionMovies');
                 if (!container) return;
-                
                 container.innerHTML = '';
-                
                 movies.slice(0, 10).forEach(movie => {
-                    const posterPath = movie.poster_path 
-                        ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                        : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                    
+                    const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => window.location.href = `detay.html?id=${movie.id}&type=movie`;
-                    card.innerHTML = `
-                        <img src="${posterPath}" alt="${movie.title}">
-                        <div class="card-title">${movie.title}</div>
-                        <div class="card-meta">
-                            <span class="match">${Math.round(movie.vote_average * 10)}%</span>
-                            <span>${movie.release_date ? movie.release_date.substring(0, 4) : '?'}</span>
-                        </div>
-                    `;
+                    card.innerHTML = `<img src="${posterPath}" alt="${movie.title}"><div class="card-title">${movie.title}</div><div class="card-meta"><span class="match">${Math.round(movie.vote_average * 10)}%</span><span>${movie.release_date ? movie.release_date.substring(0, 4) : '?'}</span></div>`;
                     container.appendChild(card);
                 });
             } catch (error) {
@@ -1453,33 +1201,19 @@
             }
         }
 
-        // ===== KOMEDİ FİLMLERİ =====
         async function loadComedyMovies() {
             try {
                 const response = await fetch(`${API_URL}/movies/category/35`);
                 const movies = await response.json();
-                
                 const container = document.getElementById('comedyMovies');
                 if (!container) return;
-                
                 container.innerHTML = '';
-                
                 movies.slice(0, 10).forEach(movie => {
-                    const posterPath = movie.poster_path 
-                        ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                        : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                    
+                    const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => window.location.href = `detay.html?id=${movie.id}&type=movie`;
-                    card.innerHTML = `
-                        <img src="${posterPath}" alt="${movie.title}">
-                        <div class="card-title">${movie.title}</div>
-                        <div class="card-meta">
-                            <span class="match">${Math.round(movie.vote_average * 10)}%</span>
-                            <span>${movie.release_date ? movie.release_date.substring(0, 4) : '?'}</span>
-                        </div>
-                    `;
+                    card.innerHTML = `<img src="${posterPath}" alt="${movie.title}"><div class="card-title">${movie.title}</div><div class="card-meta"><span class="match">${Math.round(movie.vote_average * 10)}%</span><span>${movie.release_date ? movie.release_date.substring(0, 4) : '?'}</span></div>`;
                     container.appendChild(card);
                 });
             } catch (error) {
@@ -1487,33 +1221,19 @@
             }
         }
 
-        // ===== BİLİM KURGU FİLMLERİ =====
         async function loadScifiMovies() {
             try {
                 const response = await fetch(`${API_URL}/movies/category/878`);
                 const movies = await response.json();
-                
                 const container = document.getElementById('scifiMovies');
                 if (!container) return;
-                
                 container.innerHTML = '';
-                
                 movies.slice(0, 10).forEach(movie => {
-                    const posterPath = movie.poster_path 
-                        ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                        : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                    
+                    const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => window.location.href = `detay.html?id=${movie.id}&type=movie`;
-                    card.innerHTML = `
-                        <img src="${posterPath}" alt="${movie.title}">
-                        <div class="card-title">${movie.title}</div>
-                        <div class="card-meta">
-                            <span class="match">${Math.round(movie.vote_average * 10)}%</span>
-                            <span>${movie.release_date ? movie.release_date.substring(0, 4) : '?'}</span>
-                        </div>
-                    `;
+                    card.innerHTML = `<img src="${posterPath}" alt="${movie.title}"><div class="card-title">${movie.title}</div><div class="card-meta"><span class="match">${Math.round(movie.vote_average * 10)}%</span><span>${movie.release_date ? movie.release_date.substring(0, 4) : '?'}</span></div>`;
                     container.appendChild(card);
                 });
             } catch (error) {
@@ -1521,33 +1241,19 @@
             }
         }
 
-        // ===== AKSİYON DİZİLERİ =====
         async function loadActionTV() {
             try {
                 const response = await fetch(`${API_URL}/tv/category/10759`);
                 const shows = await response.json();
-                
                 const container = document.getElementById('actionTV');
                 if (!container) return;
-                
                 container.innerHTML = '';
-                
                 shows.slice(0, 10).forEach(show => {
-                    const posterPath = show.poster_path 
-                        ? `https://image.tmdb.org/t/p/w200${show.poster_path}`
-                        : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                    
+                    const posterPath = show.poster_path ? `https://image.tmdb.org/t/p/w200${show.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => window.location.href = `detay.html?id=${show.id}&type=tv`;
-                    card.innerHTML = `
-                        <img src="${posterPath}" alt="${show.name}">
-                        <div class="card-title">${show.name}</div>
-                        <div class="card-meta">
-                            <span class="match">${Math.round(show.vote_average * 10)}%</span>
-                            <span>${show.first_air_date ? show.first_air_date.substring(0, 4) : '?'}</span>
-                        </div>
-                    `;
+                    card.innerHTML = `<img src="${posterPath}" alt="${show.name}"><div class="card-title">${show.name}</div><div class="card-meta"><span class="match">${Math.round(show.vote_average * 10)}%</span><span>${show.first_air_date ? show.first_air_date.substring(0, 4) : '?'}</span></div>`;
                     container.appendChild(card);
                 });
             } catch (error) {
@@ -1555,33 +1261,19 @@
             }
         }
 
-        // ===== KOMEDİ DİZİLERİ =====
         async function loadComedyTV() {
             try {
                 const response = await fetch(`${API_URL}/tv/category/35`);
                 const shows = await response.json();
-                
                 const container = document.getElementById('comedyTV');
                 if (!container) return;
-                
                 container.innerHTML = '';
-                
                 shows.slice(0, 10).forEach(show => {
-                    const posterPath = show.poster_path 
-                        ? `https://image.tmdb.org/t/p/w200${show.poster_path}`
-                        : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                    
+                    const posterPath = show.poster_path ? `https://image.tmdb.org/t/p/w200${show.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => window.location.href = `detay.html?id=${show.id}&type=tv`;
-                    card.innerHTML = `
-                        <img src="${posterPath}" alt="${show.name}">
-                        <div class="card-title">${show.name}</div>
-                        <div class="card-meta">
-                            <span class="match">${Math.round(show.vote_average * 10)}%</span>
-                            <span>${show.first_air_date ? show.first_air_date.substring(0, 4) : '?'}</span>
-                        </div>
-                    `;
+                    card.innerHTML = `<img src="${posterPath}" alt="${show.name}"><div class="card-title">${show.name}</div><div class="card-meta"><span class="match">${Math.round(show.vote_average * 10)}%</span><span>${show.first_air_date ? show.first_air_date.substring(0, 4) : '?'}</span></div>`;
                     container.appendChild(card);
                 });
             } catch (error) {
@@ -1589,39 +1281,25 @@
             }
         }
 
-        // ===== BİLİM KURGU DİZİLERİ =====
         async function loadScifiTV() {
             try {
                 const response = await fetch(`${API_URL}/tv/category/10765`);
                 const shows = await response.json();
-                
                 const container = document.getElementById('scifiTV');
                 if (!container) return;
-                
                 container.innerHTML = '';
-                
                 shows.slice(0, 10).forEach(show => {
-                    const posterPath = show.poster_path 
-                        ? `https://image.tmdb.org/t/p/w200${show.poster_path}`
-                        : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
-                    
+                    const posterPath = show.poster_path ? `https://image.tmdb.org/t/p/w200${show.poster_path}` : 'https://via.placeholder.com/120x160/333/666?text=No+Image';
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => window.location.href = `detay.html?id=${show.id}&type=tv`;
-                    card.innerHTML = `
-                        <img src="${posterPath}" alt="${show.name}">
-                        <div class="card-title">${show.name}</div>
-                        <div class="card-meta">
-                            <span class="match">${Math.round(show.vote_average * 10)}%</span>
-                            <span>${show.first_air_date ? show.first_air_date.substring(0, 4) : '?'}</span>
-                        </div>
-                    `;
+                    card.innerHTML = `<img src="${posterPath}" alt="${show.name}"><div class="card-title">${show.name}</div><div class="card-meta"><span class="match">${Math.round(show.vote_average * 10)}%</span><span>${show.first_air_date ? show.first_air_date.substring(0, 4) : '?'}</span></div>`;
                     container.appendChild(card);
                 });
             } catch (error) {
                 console.error('Bilim kurgu dizileri yüklenemedi:', error);
             }
         }
-</script>
+    </script>
 </body>
 </html>
