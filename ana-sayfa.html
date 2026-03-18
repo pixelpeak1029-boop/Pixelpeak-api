@@ -619,33 +619,48 @@
 
         <!-- İÇERİK (Filmler/Diziler) -->
         <div class="content-section" id="contentArea">
-            <!-- FİLMLER -->
-<div class="filmler-content">
-    <div class="section-title"><span>🍿</span> Popüler Filmler</div>
-    <div class="horizontal-scroll" id="popularMovies"></div>
-</div>
-
-<!-- KATEGORİLER (BURAYA EKLE) -->
-<div class="content-row">
-    <div class="row-header">
-        <h3>🎬 Film Kategorileri</h3>
-        <a href="#" id="moreCategories">Tümü ›</a>
+            <!-- İÇERİK (Filmler/Diziler) -->
+<div class="content-section" id="contentArea">
+    
+    <!-- FİLMLER -->
+    <div class="filmler-content">
+        <div class="section-title"><span>🍿</span> Popüler Filmler</div>
+        <div class="horizontal-scroll" id="popularMovies"></div>
     </div>
-    <div class="horizontal-scroll" id="movieCategories"></div>
-</div>
 
-<div class="content-row">
-    <div class="row-header">
-        <h3>📺 Dizi Kategorileri</h3>
-        <a href="#" id="moreTvCategories">Tümü ›</a>
+    <!-- KATEGORİLER - BURAYA EKLE -->
+    <div id="kategoriAlanı"></div>
+
+    <script>
+    // SADECE BUNU EKLE, GERİSİNE KARIŞMA!
+    async function kategorileriGoster() {
+        try {
+            const cevap = await fetch('https://pixelpeak-api.onrender.com/api/genres/movie');
+            const kategoriler = await cevap.json();
+            
+            let html = '<div class="content-row"><div class="row-header"><h3>🎬 Film Kategorileri</h3></div><div class="horizontal-scroll">';
+            
+            kategoriler.slice(0, 10).forEach(k => {
+                html += `<div class="card" style="width:100px;" onclick="window.location.href='kategori.html?id=${k.id}&type=movie&name=${k.name}'">
+                    <div style="height:100px; background:#e50914; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-weight:bold;">${k.name}</div>
+                </div>`;
+            });
+            
+            html += '</div></div>';
+            document.getElementById('kategoriAlanı').innerHTML = html;
+        } catch (error) {
+            console.error('Kategori hatası:', error);
+        }
+    }
+    kategorileriGoster();
+    </script>
+
+    <!-- DİZİLER -->
+    <div class="diziler-content">
+        <div class="section-title"><span>📺</span> Popüler Diziler</div>
+        <div class="horizontal-scroll" id="popularTVShows"></div>
     </div>
-    <div class="horizontal-scroll" id="tvCategories"></div>
-</div>
 
-<!-- DİZİLER -->
-<div class="diziler-content">
-    <div class="section-title"><span>📺</span> Popüler Diziler</div>
-    <div class="horizontal-scroll" id="popularTVShows"></div>
 </div>
 
         <!-- CHAT PANELİ -->
